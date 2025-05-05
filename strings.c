@@ -12,7 +12,7 @@ struct string {
 
 typedef struct string string;
 
-static void terminate(string* s) {
+static void terminate(string *s) {
     s->buffer[s->len] = '\0';
 }
 
@@ -63,7 +63,7 @@ void string_set(string *s, const char *value, const size_t len) {
  * Allocates a new string with the value of the given buffer
  * If len > capacity will only copy up to capacity
  */
-string *string_new(const size_t capacity, const char*value, const size_t len) {
+string *string_new(const size_t capacity, const char *value, const size_t len) {
     string *s = string_new_empty(capacity);
     string_set(s, value, len);
     return s;
@@ -124,7 +124,7 @@ bool string_eq(const string *a, const string *b) {
     if (a->len != b->len) {
         return false;
     }
-    return memcmp(a->buffer, b->buffer, a->len*sizeof(char)) == 0;
+    return memcmp(a->buffer, b->buffer, a->len * sizeof(char)) == 0;
 }
 
 
@@ -168,7 +168,7 @@ int string_find_c(const string *haystack, const char *needle, const size_t n) {
     string target;
     target.cap = n;
     target.len = n;
-    memcpy(target.buffer, needle, n*sizeof(char));
+    memcpy(target.buffer, needle, n * sizeof(char));
     return string_find(haystack, &target);
 }
 
@@ -177,4 +177,3 @@ int string_find_c(const string *haystack, const char *needle, const size_t n) {
 bool string_contains(const string *haystack, const string *needle) {
     return string_find(haystack, needle) != -1;
 }
-

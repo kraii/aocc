@@ -5,7 +5,7 @@
 #include "strings.c"
 
 Test(strings, new_empty_string) {
-    string* s = string_new_empty(5);
+    string *s = string_new_empty(5);
 
     cr_expect(eq(s->cap, 5));
     cr_expect(eq(string_len(s), 0));
@@ -15,7 +15,7 @@ Test(strings, new_empty_string) {
 }
 
 Test(strings, set_string) {
-    string* s = string_new_empty(5);
+    string *s = string_new_empty(5);
     string_set(s, "12345", 5);
     cr_expect(eq(string_len(s), 5));
     cr_assert_str_eq(s->buffer, "12345");
@@ -25,7 +25,7 @@ Test(strings, set_string) {
 }
 
 Test(strings, set_string_oob) {
-    string* s = string_new_empty(5);
+    string *s = string_new_empty(5);
     string_set(s, "123456", 6);
     cr_expect(eq(string_len(s), 5));
     cr_assert_str_eq(s->buffer, "12345");
@@ -46,7 +46,7 @@ Test(strings, new_string_from_literal) {
 
 
 Test(strings, set_string_l) {
-    string* s = string_new_empty(5);
+    string *s = string_new_empty(5);
     string_set_l(s, "12345");
     cr_expect(eq(string_len(s), 5));
 
