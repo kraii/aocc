@@ -18,6 +18,8 @@ Test(vector, create_new_vector_and_add_to_it) {
     test_get_i(vec, 1, 2);
     test_get_i(vec, 2, 3);
     cr_expect_eq(vector_len(vec), 3);
+
+    vector_free(vec);
 }
 
 Test(vector, grows_if_required) {
@@ -32,5 +34,21 @@ Test(vector, grows_if_required) {
     test_get_i(vec, 2, 3);
     cr_expect_eq(vector_capacity(vec), 4);
     cr_expect_eq(vector_len(vec), 3);
+
+    vector_free(vec);
 }
 
+Test(vector, set_index) {
+    vector *vec = vector_new(sizeof(int));
+    cr_assert_(vector_push_i(vec, 1));
+    vector_push_i(vec, 2);
+
+    vector_set_i(vec, 1, 227);
+
+    test_get_i(vec, 0, 1);
+    test_get_i(vec, 1, 227);
+
+    cr_expect_eq(vector_len(vec), 2);
+
+    vector_free(vec);
+}

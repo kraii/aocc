@@ -87,3 +87,17 @@ size_t vector_capacity(const vector *v) {
 size_t vector_len(const vector *v) {
     return v->len;
 }
+
+void vector_free(vector *vec) {
+    free(vec->data);
+    free(vec);
+}
+
+void vector_set(const vector *vec, const size_t i, const void *e) {
+    assert(i < vec->len);
+    memcpy(vec->data + (i * vec->elem_size), e, vec->elem_size);
+}
+
+void vector_set_i(const vector *vec, const size_t i, const int e) {
+    vector_set(vec, i, &e);
+}
