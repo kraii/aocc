@@ -16,7 +16,6 @@ static void terminate(string* s) {
     s->buffer[s->len] = '\0';
 }
 
-
 /**
  * Allocates a new string with the given capacity (>0) and length 0
  */
@@ -115,3 +114,67 @@ void string_cat_l(string *l, const string *r) {
 
     terminate(l);
 }
+
+/**
+ *
+ * @return true if the given strings have equal contents false otherwise.
+ * Capacity is not considered.
+ */
+bool string_eq(const string *a, const string *b) {
+    if (a->len != b->len) {
+        return false;
+    }
+    return memcmp(a->buffer, b->buffer, a->len*sizeof(char)) == 0;
+}
+
+
+/**
+ * @return The first index of needle in haystack, or -1 if not found
+ */
+int string_find(const string *haystack, const string *needle) {
+    const int n = string_len(needle);
+    const int m = string_len(haystack);
+
+    if (n == 0) {
+        return 0;
+    }
+
+    const int max = m - n;
+    for (int i = 0; i <= max; i++) {
+        // Find first char
+        while (i <= max && needle->buffer[0] != haystack->buffer[i]) i++;
+
+        if (i > max) {
+            return -1;
+        }
+
+        int j = i + 1;
+        const int end = i + n - 1;
+
+        for (int k = 1; j < end && needle->buffer[k] == haystack->buffer[j]; k++) {
+            j++;
+        }
+        if (j == end) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/**
+ * @return The first index of needle in haystack, or -1 if not found
+ */
+int string_find_c(const string *haystack, const char *needle, const size_t n) {
+    string target;
+    target.cap = n;
+    target.len = n;
+    memcpy(target.buffer, needle, n*sizeof(char));
+    return string_find(haystack, &target);
+}
+
+#define string_find_l(h, n) string_find_c(h, n, sizeof(n))
+
+bool string_contains(const string *haystack, const string *needle) {
+    return string_find(haystack, needle) != -1;
+}
+
