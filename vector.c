@@ -80,6 +80,12 @@ int vector_get_i(const vector *vec, const size_t index) {
     return *(int *) r;
 }
 
+void *vector_get_p(const vector *vec, const size_t index) {
+    void **r = vector_get(vec, index);
+    assert(r != NULL);
+    return *r;
+}
+
 size_t vector_capacity(const vector *v) {
     return v->cap;
 }
@@ -91,6 +97,13 @@ size_t vector_len(const vector *v) {
 void vector_free(vector *vec) {
     free(vec->data);
     free(vec);
+}
+
+void vector_free_all(vector *vec) {
+    for (size_t i = 0; i < vec->len; i++) {
+        free(vector_get_p(vec, i));
+    }
+    vector_free(vec);
 }
 
 void vector_set(const vector *vec, const size_t i, const void *e) {

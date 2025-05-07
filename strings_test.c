@@ -2,6 +2,7 @@
 #include <criterion/new/assert.h>
 #include <string.h>
 
+#include <stdarg.h>
 #include "strings.c"
 
 Test(strings, new_empty_string) {
@@ -11,7 +12,7 @@ Test(strings, new_empty_string) {
     cr_expect(eq(string_len(s), 0));
     cr_assert_str_empty(s->buffer);
 
-    free(s);
+    string_free(s);
 }
 
 Test(strings, set_string) {
@@ -21,7 +22,7 @@ Test(strings, set_string) {
     cr_assert_str_eq(s->buffer, "12345");
     cr_expect(eq(strlen(s->buffer), 5));
 
-    free(s);
+    string_free(s);
 }
 
 Test(strings, set_string_oob) {
@@ -31,7 +32,7 @@ Test(strings, set_string_oob) {
     cr_assert_str_eq(s->buffer, "12345");
     cr_expect(eq(strlen(s->buffer), 5));
 
-    free(s);
+    string_free(s);
 }
 
 Test(strings, new_string_from_literal) {
@@ -41,7 +42,7 @@ Test(strings, new_string_from_literal) {
     cr_assert_str_eq(s->buffer, "1234");
     cr_expect(eq(strlen(s->buffer), 4));
 
-    free(s);
+    string_free(s);
 }
 
 
@@ -53,7 +54,7 @@ Test(strings, set_string_l) {
     cr_assert_str_eq(s->buffer, "12345");
     cr_expect(eq(strlen(s->buffer), 5));
 
-    free(s);
+    string_free(s);
 }
 
 Test(strings, new_string_l) {
@@ -63,13 +64,13 @@ Test(strings, new_string_l) {
     cr_assert_str_eq(s->buffer, "1234");
     cr_expect(eq(strlen(s->buffer), 4));
 
-    free(s);
+    string_free(s);
 }
 
 Test(strings, string_len) {
     string *s = string_new_l("123");
     cr_expect(eq(string_len(s), 3));
-    free(s);
+    string_free(s);
 }
 
 
@@ -81,9 +82,8 @@ Test(strings, copy) {
     cr_assert_str_eq(b->buffer, "123");
     cr_expect(eq(strlen(b->buffer), 3));
 
-    free(a);
-    // ReSharper disable once CppDFADeletedPointer
-    free(b);
+    string_free(a);
+    string_free(b);
 }
 
 
@@ -95,9 +95,9 @@ Test(strings, concat_new) {
     cr_assert_str_eq(result->buffer, "abc 123");
     cr_expect(eq(strlen(result->buffer), 7));
 
-    free(a);
-    free(b);
-    free(result);
+    string_free(a);
+    string_free(b);
+    string_free(result);
 }
 
 Test(strings, concat_l) {
@@ -108,10 +108,9 @@ Test(strings, concat_l) {
     cr_assert_str_eq(a->buffer, "abc 123");
     cr_expect(eq(strlen(a->buffer), 7));
     cr_expect(eq(string_len(a), 7));
-    free(a);
-    free(b);
+    string_free(a);
+    string_free(b);
 }
-
 
 Test(strings, concat_l_over_cap) {
     string *a = string_new(6, "abc ", 4);
@@ -121,8 +120,8 @@ Test(strings, concat_l_over_cap) {
     cr_assert_str_eq(a->buffer, "abc 12");
     cr_expect(eq(strlen(a->buffer), 6));
     cr_expect(eq(string_len(a), 6));
-    free(a);
-    free(b);
+    string_free(a);
+    string_free(b);
 }
 
 Test(strings, string_eq) {
@@ -131,8 +130,8 @@ Test(strings, string_eq) {
 
     cr_expect(string_eq(a, b), "strings should be equal");
 
-    free(a);
-    free(b);
+    string_free(a);
+    string_free(b);
 }
 
 Test(strings, string_not_eq) {
@@ -141,8 +140,8 @@ Test(strings, string_not_eq) {
 
     cr_expect(not(string_eq(a, b)), "non strings should not be equal");
 
-    free(a);
-    free(b);
+    string_free(a);
+    string_free(b);
 }
 
 Test(strings, string_find) {
@@ -150,8 +149,8 @@ Test(strings, string_find) {
     string *needle = string_new_l("potato");
     const int result = string_find(haystack, needle);
     cr_expect(eq(result, 6), "result should be index 6 but was %d", result);
-    free(haystack);
-    free(needle);
+    string_free(haystack);
+    string_free(needle);
 }
 
 Test(strings, string_find_not_found) {
@@ -159,22 +158,22 @@ Test(strings, string_find_not_found) {
     string *needle = string_new_l("cake");
     const int result = string_find(haystack, needle);
     cr_expect(eq(result, -1));
-    free(haystack);
-    free(needle);
+    string_free(haystack);
+    string_free(needle);
 }
 
 Test(strings, string_find_l) {
     string *haystack = string_new_l("a big potato farm was very nice");
     const int result = string_find_l(haystack, "potato");
     cr_expect(eq(result, 6), "result should be index 6 but was %d", result);
-    free(haystack);
+    string_free(haystack);
 }
 
 Test(strings, string_find_l_not_found) {
     string *haystack = string_new_l("a big potato farm was very nice");
     const int result = string_find_l(haystack, "cake");
     cr_expect(eq(result, -1));
-    free(haystack);
+    string_free(haystack);
 }
 
 Test(strings, string_contains_yes) {
@@ -182,8 +181,8 @@ Test(strings, string_contains_yes) {
     string *needle = string_new_l("saus");
     const int result = string_contains(haystack, needle);
     cr_expect(result, "string does contain needle");
-    free(haystack);
-    free(needle);
+    string_free(haystack);
+    string_free(needle);
 }
 
 Test(strings, string_contains_no) {
@@ -191,6 +190,63 @@ Test(strings, string_contains_no) {
     string *needle = string_new_l("M");
     const int result = string_contains(haystack, needle);
     cr_expect(not(result), "string does not contain needle");
-    free(haystack);
-    free(needle);
+    string_free(haystack);
+    string_free(needle);
+}
+
+Test(strings, substring) {
+    string *val = string_new_l("I am Batman");
+    string *sub = string_new_substring(val, 5, 11);
+    cr_expect_str_eq(sub->buffer, "Batman");
+    string_free(val);
+    string_free(sub);
+}
+
+Test(strings, substring_too_long_end) {
+    string *val = string_new_l("I am Batman");
+    string *sub = string_new_substring(val, 5, 450);
+    cr_expect_str_eq(sub->buffer, "Batman");
+    string_free(val);
+    string_free(sub);
+}
+
+Test(strings, substring_errors) {
+    string *val = string_new_l("I am Batman");
+    const string *sub = string_new_substring(val, 11, 15);
+    cr_expect_null(sub);
+    sub = string_new_substring(val, 15, 14);
+    cr_expect_null(sub);
+    free(val);
+}
+
+Test(strings, find_single_char) {
+    const string src = string_l("a big potato farm was very nice");
+    const string delim = string_l("b");
+    const int result = string_find(&src, &delim);
+    cr_expect_eq(result, 2);
+}
+
+Test(strings, string_split) {
+    const string src = string_l("Waffle man likes to iron");
+    const string delim = string_l(" ");
+    vector *result = string_split(&src, &delim);
+    const size_t tokens = vector_len(result);
+    cr_assert_eq(tokens, 5, "Expect 5 tokens got %lu", tokens);
+
+    cr_assert(string_eq_l(vector_get_p(result, 0), "Waffle"));
+    cr_assert(string_eq_l(vector_get_p(result, 1), "man"));
+    cr_assert(string_eq_l(vector_get_p(result, 2), "likes"));
+    cr_assert(string_eq_l(vector_get_p(result, 3), "to"));
+    cr_assert(string_eq_l(vector_get_p(result, 4), "iron"));
+    vector_free_all(result);
+}
+
+Test(string, string_split_no_match) {
+    const string src = string_l("Waffle man likes to iron");
+    const string delim = string_l("Z");
+    vector *result = string_split(&src, &delim);
+    const size_t tokens = vector_len(result);
+    cr_assert_eq(tokens, 1, "Expect 1 tokens got %lu", tokens);
+    cr_assert(string_eq(vector_get_p(result, 0), &src));
+    free(result);
 }

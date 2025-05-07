@@ -3,16 +3,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <bits/signum-generic.h>
+#ifndef vector
+#include "vector.c"
+#endif
+
 
 struct string {
     size_t cap;
     size_t len;
-    char buffer[/*cap*/];
+    char *buffer;
 };
 
 typedef struct string string;
 
-static void terminate(string *s) {
+static void terminate(const string *s) {
     s->buffer[s->len] = '\0';
 }
 
@@ -24,17 +28,28 @@ string *string_new_empty(const size_t capacity) {
         return NULL;
     }
 
-    // Allocate 1 extra char for \0
-    string *result = malloc(offsetof(string, buffer) + (sizeof(char) * (capacity + 1)));
+    string *result = malloc(sizeof(string));
     if (result == NULL) {
         raise(SIGTRAP);
+        return NULL;
+    }
+    // Allocate 1 extra char for \0
+    char* buffer = malloc(sizeof(char) * (capacity + 1));
+    if (buffer == NULL) {
+        free(result);
         return NULL;
     }
 
     result->cap = capacity;
     result->len = 0;
+    result->buffer = buffer;
     terminate(result);
     return result;
+}
+
+void string_free(string *s) {
+    free(s->buffer);
+    free(s);
 }
 
 
@@ -65,6 +80,9 @@ void string_set(string *s, const char *value, const size_t len) {
  */
 string *string_new(const size_t capacity, const char *value, const size_t len) {
     string *s = string_new_empty(capacity);
+    if (s == NULL) {
+        return NULL;
+    }
     string_set(s, value, len);
     return s;
 }
@@ -79,6 +97,7 @@ string *string_copy(const size_t capacity, const string *original) {
 
 #define string_set_l(s, value) string_set(s, value, sizeof(value)-1)
 #define string_new_l(value) string_new(sizeof(value) - 1, value, sizeof(value) -1)
+#define string_l(value) {sizeof(value) -1, sizeof(value) -1, value}
 
 /**
  * @return A newly allocated string with the result of concatenating l and r
@@ -89,6 +108,13 @@ string *string_cat_new(const string *l, const string *r) {
     result->len = l->len + r->len;
     terminate(result);
     return result;
+}
+
+/**
+ * @return the total capacity of the given string
+ */
+size_t string_cap(const string *s) {
+    return s->cap;
 }
 
 /**
@@ -127,11 +153,17 @@ bool string_eq(const string *a, const string *b) {
     return memcmp(a->buffer, b->buffer, a->len * sizeof(char)) == 0;
 }
 
+bool string_eq_c(const string *a, char* literal, const size_t n) {
+    const string l = {n, n, literal};
+    return string_eq(a, &l);
+}
+
+#define string_eq_l(s, l) string_eq_c(s, l, sizeof(l) - 1)
 
 /**
  * @return The first index of needle in haystack, or -1 if not found
  */
-int string_find(const string *haystack, const string *needle) {
+int string_find_at(const string *haystack, const string *needle, const size_t start) {
     const int n = string_len(needle);
     const int m = string_len(haystack);
 
@@ -140,17 +172,20 @@ int string_find(const string *haystack, const string *needle) {
     }
 
     const int max = m - n;
-    for (int i = 0; i <= max; i++) {
-        // Find first char
+    for (int i = start; i <= max; i++) {
         while (i <= max && needle->buffer[0] != haystack->buffer[i]) i++;
 
         if (i > max) {
             return -1;
         }
+        if (needle->len == 1) {
+            return i;
+        }
 
         int j = i + 1;
         const int end = i + n - 1;
 
+        //TODO: Would memcmp be better?
         for (int k = 1; j < end && needle->buffer[k] == haystack->buffer[j]; k++) {
             j++;
         }
@@ -161,14 +196,19 @@ int string_find(const string *haystack, const string *needle) {
     return -1;
 }
 
+int string_find(const string *haystack, const string *needle) {
+    return string_find_at(haystack, needle, 0);
+}
+
+
 /**
  * @return The first index of needle in haystack, or -1 if not found
  */
-int string_find_c(const string *haystack, const char *needle, const size_t n) {
+int string_find_c(const string *haystack, char *needle, const size_t n) {
     string target;
     target.cap = n;
     target.len = n;
-    memcpy(target.buffer, needle, n * sizeof(char));
+    target.buffer = needle;
     return string_find(haystack, &target);
 }
 
@@ -177,3 +217,35 @@ int string_find_c(const string *haystack, const char *needle, const size_t n) {
 bool string_contains(const string *haystack, const string *needle) {
     return string_find(haystack, needle) != -1;
 }
+
+/**
+ * @param s a string
+ * @param start the start index of the substring, inclusive
+ * @param end the index at the end of the string, not inclusive
+ * @return A new string containing the part of the string between the given indexes.
+ * NULL if start >= end or if start is out of bounds
+ */
+string *string_new_substring(const string *s, const size_t start, const size_t end) {
+    if (start >= s->len || start >= end) {
+        return NULL;
+    }
+    const size_t len = min(end, s->len) - start;
+    return string_new(len, s->buffer + start, len);
+}
+
+vector *string_split(const string *src, const string *delim) {
+    vector *result = vector_new(sizeof(string*));
+    int match = string_find(src, delim);
+    size_t index = 0;
+    while (match != -1 && index < src->len) {
+        const string *token = string_new_substring(src, index, match);
+        vector_push(result, &token);
+        index = match + delim->len;
+        match = string_find_at(src, delim, index);
+    }
+    const string *token = string_new_substring(src, index, src->len+1);
+    vector_push(result, &token);
+
+    return result;
+}
+
