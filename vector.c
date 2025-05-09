@@ -114,3 +114,11 @@ void vector_set(const vector *vec, const size_t i, const void *e) {
 void vector_set_i(const vector *vec, const size_t i, const int e) {
     vector_set(vec, i, &e);
 }
+
+void *vector_pop(vector *vec) {
+    return vec->data + vec->elem_size * --vec->len;
+}
+
+int vector_pop_i(vector *vec) {
+    return *(int *) vector_pop(vec);
+}

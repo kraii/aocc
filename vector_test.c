@@ -1,5 +1,4 @@
 #include <criterion/criterion.h>
-#include <string.h>
 
 #include "vector.c"
 
@@ -49,6 +48,21 @@ Test(vector, set_index) {
     test_get_i(vec, 1, 227);
 
     cr_expect_eq(vector_len(vec), 2);
+
+    vector_free(vec);
+}
+
+Test(vector, pop) {
+    vector *vec = vector_new(sizeof(int));
+    vector_push_i(vec, 1);
+    vector_push_i(vec, 2);
+
+    int p = vector_pop_i(vec);
+    cr_assert_eq(2, p);
+    cr_assert_eq(vector_len(vec), 1);
+    p = vector_pop_i(vec);
+    cr_assert_eq(1, p);
+    cr_assert_eq(vector_len(vec), 0);
 
     vector_free(vec);
 }
