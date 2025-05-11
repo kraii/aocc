@@ -1,6 +1,6 @@
 #include <criterion/criterion.h>
 
-#include "vector.c"
+#include "vector.h"
 
 static void test_get_i(const vector *vec, const size_t i, const int expected) {
     const int result = vector_get_i(vec, i);

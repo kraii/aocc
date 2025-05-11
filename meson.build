@@ -1,16 +1,28 @@
 project('aocc', 'c')
 
-executable('example', 'example.c')
+fs = import('fs')
 
-tests = ['strings', 'vector']
+test_resources = ['example.txt']
+foreach r : test_resources
+    fs.copyfile('test/' + r)
+endforeach
+
+tests = ['strings', 'vector', 'files']
 
 cc = meson.get_compiler('c')
 lib_criterion = cc.find_library('criterion', required: true)
 
+test_deps = [lib_criterion]
+
+vector_lib = library('vector', 'vector.c')
+strings_lib = library('strings', 'strings.c', link_with: [vector_lib])
+files_lib = library('files', 'files.c', link_with: [vector_lib, strings_lib])
+
 foreach t : tests
-    e = executable(t,
+    e = executable(t + '_test',
                 t + '_test.c',
-                dependencies: [lib_criterion]
+                dependencies: test_deps,
+                link_with: [vector_lib, strings_lib, files_lib]
     )
     test(t, e)
 endforeach

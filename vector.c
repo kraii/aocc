@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector.h>
 
-static constexpr int DEFAULT_CAPACITY = 16;
-static constexpr int GROWTH_FACTOR = 2;
+static constexpr int VECTOR_DEFAULT_CAPACITY = 16;
+static constexpr int VECTOR_GROWTH_FACTOR = 2;
 
 struct vector {
     size_t len;
@@ -13,8 +14,6 @@ struct vector {
     size_t elem_size;
     void *data;
 };
-
-typedef struct vector vector;
 
 vector *vector_newc(const size_t elem_size, const size_t initial_capacity) {
     vector *v = malloc(sizeof(vector));
@@ -36,14 +35,14 @@ vector *vector_newc(const size_t elem_size, const size_t initial_capacity) {
 }
 
 vector *vector_new(const size_t elem_size) {
-    return vector_newc(elem_size, DEFAULT_CAPACITY);
+    return vector_newc(elem_size, VECTOR_DEFAULT_CAPACITY);
 }
 
 static bool grow_if_req(vector *vec, const size_t i) {
     if (i > vec->cap) {
-        size_t new_cap = vec->cap * GROWTH_FACTOR;
+        size_t new_cap = vec->cap * VECTOR_GROWTH_FACTOR;
         while (new_cap < i) {
-            new_cap *= GROWTH_FACTOR;
+            new_cap *= VECTOR_GROWTH_FACTOR;
         }
         void *data = reallocarray(vec->data, new_cap, vec->elem_size);
         if (data == NULL) {

@@ -3,14 +3,14 @@
 #include <string.h>
 
 #include <stdarg.h>
-#include "strings.c"
+#include "strings.h"
 
 Test(strings, new_empty_string) {
     string *s = string_new_empty(5);
 
-    cr_expect(eq(s->cap, 5));
+    cr_expect(eq(string_cap(s), 5));
     cr_expect(eq(string_len(s), 0));
-    cr_assert_str_empty(s->buffer);
+    cr_assert_str_empty(string_c(s));
 
     string_free(s);
 }
@@ -19,8 +19,8 @@ Test(strings, set_string) {
     string *s = string_new_empty(5);
     string_set(s, "12345", 5);
     cr_expect(eq(string_len(s), 5));
-    cr_assert_str_eq(s->buffer, "12345");
-    cr_expect(eq(strlen(s->buffer), 5));
+    cr_assert_str_eq(string_c(s), "12345");
+    cr_expect(eq(strlen(string_c(s)), 5));
 
     string_free(s);
 }
@@ -29,8 +29,8 @@ Test(strings, set_string_oob) {
     string *s = string_new_empty(5);
     string_set(s, "123456", 6);
     cr_expect(eq(string_len(s), 5));
-    cr_assert_str_eq(s->buffer, "12345");
-    cr_expect(eq(strlen(s->buffer), 5));
+    cr_assert_str_eq(string_c(s), "12345");
+    cr_expect(eq(strlen(string_c(s)), 5));
 
     string_free(s);
 }
@@ -39,8 +39,8 @@ Test(strings, new_string_from_literal) {
     string *s = string_new(5, "1234", 4);
 
     cr_expect(eq(string_len(s), 4));
-    cr_assert_str_eq(s->buffer, "1234");
-    cr_expect(eq(strlen(s->buffer), 4));
+    cr_assert_str_eq(string_c(s), "1234");
+    cr_expect(eq(strlen(string_c(s)), 4));
 
     string_free(s);
 }
@@ -51,8 +51,8 @@ Test(strings, set_string_l) {
     string_set_l(s, "12345");
     cr_expect(eq(string_len(s), 5));
 
-    cr_assert_str_eq(s->buffer, "12345");
-    cr_expect(eq(strlen(s->buffer), 5));
+    cr_assert_str_eq(string_c(s), "12345");
+    cr_expect(eq(strlen(string_c(s)), 5));
 
     string_free(s);
 }
@@ -61,8 +61,8 @@ Test(strings, new_string_l) {
     string *s = string_new_l("1234");
 
     cr_expect(eq(string_len(s), 4));
-    cr_assert_str_eq(s->buffer, "1234");
-    cr_expect(eq(strlen(s->buffer), 4));
+    cr_assert_str_eq(string_c(s), "1234");
+    cr_expect(eq(strlen(string_c(s)), 4));
 
     string_free(s);
 }
@@ -197,7 +197,7 @@ Test(strings, string_contains_no) {
 Test(strings, substring) {
     string *val = string_new_l("I am Batman");
     string *sub = string_new_substring(val, 5, 11);
-    cr_expect_str_eq(sub->buffer, "Batman");
+    cr_expect_str_eq(string_c(sub), "Batman");
     string_free(val);
     string_free(sub);
 }
@@ -205,7 +205,7 @@ Test(strings, substring) {
 Test(strings, substring_too_long_end) {
     string *val = string_new_l("I am Batman");
     string *sub = string_new_substring(val, 5, 450);
-    cr_expect_str_eq(sub->buffer, "Batman");
+    cr_expect_str_eq(string_c(sub), "Batman");
     string_free(val);
     string_free(sub);
 }

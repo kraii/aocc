@@ -1,20 +1,10 @@
 #include <signal.h>
-#include <stddef.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <bits/signum-generic.h>
-#ifndef vector
-#include "vector.c"
-#endif
-
-
-struct string {
-    size_t cap;
-    size_t len;
-    char *buffer;
-};
-
-typedef struct string string;
+#include <assert.h>
+#include <string.h>
+#include "strings.h"
+#include "vector.h"
 
 static void terminate(const string *s) {
     s->buffer[s->len] = '\0';
@@ -44,6 +34,11 @@ string *string_new_empty(const size_t capacity) {
     result->len = 0;
     result->buffer = buffer;
     terminate(result);
+    return result;
+}
+
+string string_wrap(char *s, const size_t n) {
+    const string result  = {n, n, s};
     return result;
 }
 
@@ -94,10 +89,6 @@ string *string_new(const size_t capacity, const char *value, const size_t len) {
 string *string_copy(const size_t capacity, const string *original) {
     return string_new(capacity, original->buffer, min(capacity, original->len));
 }
-
-#define string_set_l(s, value) string_set(s, value, sizeof(value)-1)
-#define string_new_l(value) string_new(sizeof(value) - 1, value, sizeof(value) -1)
-#define string_l(value) {sizeof(value) -1, sizeof(value) -1, value}
 
 /**
  * @return A newly allocated string with the result of concatenating l and r
@@ -158,8 +149,6 @@ bool string_eq_c(const string *a, char* literal, const size_t n) {
     return string_eq(a, &l);
 }
 
-#define string_eq_l(s, l) string_eq_c(s, l, sizeof(l) - 1)
-
 /**
  * @return The first index of needle in haystack, or -1 if not found
  */
@@ -212,8 +201,6 @@ int string_find_c(const string *haystack, char *needle, const size_t n) {
     return string_find(haystack, &target);
 }
 
-#define string_find_l(h, n) string_find_c(h, n, sizeof(n))
-
 bool string_contains(const string *haystack, const string *needle) {
     return string_find(haystack, needle) != -1;
 }
@@ -249,3 +236,17 @@ vector *string_split(const string *src, const string *delim) {
     return result;
 }
 
+bool string_set_cap(string *s, const size_t capacity) {
+    assert(capacity >= s->len);
+    char *buff = realloc(s->buffer, sizeof(char) * (capacity + 1));
+    if (buff == NULL) {
+        return false;
+    }
+    s->buffer = buff;
+    s->cap = capacity;
+    return true;
+}
+
+const char *string_c(const string *s) {
+    return s->buffer;
+}
