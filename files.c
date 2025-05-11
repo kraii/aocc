@@ -19,7 +19,7 @@ vector *read_file_lines(const char *file_path) {
             string more = string_wrap(buffer, len);
             string_cat_l(line, &more);
         }
-        
+        string_trim(line);
         vector_push(result, &line);
     }
 

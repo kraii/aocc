@@ -29,6 +29,7 @@ string *string_new_substring(const string *s, size_t start, size_t end);
 vector *string_split(const string *src, const string *delim);
 bool string_set_cap(string *s, size_t capacity);
 const char *string_c(const string *s);
+void string_trim(string *s);
 
 #define string_set_l(s, value) string_set(s, value, sizeof(value)-1)
 #define string_new_l(value) string_new(sizeof(value) - 1, value, sizeof(value) -1)

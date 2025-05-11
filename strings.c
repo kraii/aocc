@@ -4,6 +4,10 @@
 #include <assert.h>
 #include <string.h>
 #include "strings.h"
+
+#include <ctype.h>
+#include <stdio.h>
+
 #include "vector.h"
 
 static void terminate(const string *s) {
@@ -249,4 +253,22 @@ bool string_set_cap(string *s, const size_t capacity) {
 
 const char *string_c(const string *s) {
     return s->buffer;
+}
+
+void string_trim(string *s) {
+    size_t i = 0;
+
+    while (i < s->len-1 && isspace(s->buffer[i])) {
+        i++;
+    }
+    if (i > 0) {
+        s->len -= i;
+        memmove(s->buffer, &s->buffer[i], s->len * sizeof(char));
+    }
+
+
+    while (s->len != 0 && isspace(s->buffer[s->len-1])) {
+        s->len--;
+    }
+    terminate(s);
 }

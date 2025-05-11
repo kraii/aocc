@@ -250,3 +250,35 @@ Test(string, string_split_no_match) {
     cr_assert(string_eq(vector_get_p(result, 0), &src));
     free(result);
 }
+
+Test(string, string_trim_start) {
+    string *target = string_new_l("   Waffle man likes to iron");
+    string_trim(target);
+    cr_assert_str_eq(string_c(target), "Waffle man likes to iron");
+    cr_assert_eq(string_len(target), 24);
+    free(target);
+}
+
+Test(string, string_trim_end) {
+    string *target = string_new_l("Waffle man likes to iron   ");
+    string_trim(target);
+    cr_assert_str_eq(string_c(target), "Waffle man likes to iron");
+    cr_assert_eq(string_len(target), 24);
+    free(target);
+}
+
+Test(string, string_trim_both) {
+    string *target = string_new_l(" Waffle man likes to iron   ");
+    string_trim(target);
+    cr_assert_str_eq(string_c(target), "Waffle man likes to iron");
+    cr_assert_eq(string_len(target), 24);
+    free(target);
+}
+
+Test(string, string_trim_blank) {
+    string *target = string_new_l("  ");
+    string_trim(target);
+    cr_assert_str_eq(string_c(target), "");
+    cr_assert_eq(string_len(target), 0);
+    free(target);
+}
