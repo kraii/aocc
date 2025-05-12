@@ -15,6 +15,7 @@ size_t string_len(const string *s);
 void string_set(string *s, const char *value, size_t len);
 string *string_new(size_t capacity, const char *value, size_t len);
 string *string_copy(size_t capacity, const string *original);
+void string_copy_to(string *dest, const string *src);
 string *string_cat_new(const string *l, const string *r);
 size_t string_cap(const string *s);
 size_t string_rem_cap(const string *s);
@@ -27,9 +28,12 @@ int string_find_c(const string *haystack, char *needle, size_t n);
 bool string_contains(const string *haystack, const string *needle);
 string *string_new_substring(const string *s, size_t start, size_t end);
 vector *string_split(const string *src, const string *delim);
+bool string_tok(string *dest, const string *src, size_t *pos, const string *delim);
 bool string_set_cap(string *s, size_t capacity);
 const char *string_c(const string *s);
 void string_trim(string *s);
+long string_to_l(string *s);
+
 
 #define string_set_l(s, value) string_set(s, value, sizeof(value)-1)
 #define string_new_l(value) string_new(sizeof(value) - 1, value, sizeof(value) -1)

@@ -2,6 +2,7 @@
 #include <string.h>
 #include "vector.h"
 #include "strings.h"
+#include "files.h"
 
 #define BUFFER_SIZE 200
 

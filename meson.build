@@ -14,9 +14,22 @@ lib_criterion = cc.find_library('criterion', required: true)
 
 test_deps = [lib_criterion]
 
+
+
 vector_lib = library('vector', 'vector.c')
 strings_lib = library('strings', 'strings.c', link_with: [vector_lib])
 files_lib = library('files', 'files.c', link_with: [vector_lib, strings_lib])
+
+
+cal_2024 = [ 'day1' ]
+foreach d : cal_2024
+    name = d + '_2024'
+    executable(name,
+               name + '.c',
+               link_with: [vector_lib, strings_lib, files_lib]
+    )
+endforeach
+
 
 foreach t : tests
     e = executable(t + '_test',

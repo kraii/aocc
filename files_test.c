@@ -1,5 +1,5 @@
 #include <criterion/criterion.h>
-#include "files.c"
+#include "files.h"
 
 Test(files, read_file_lines) {
     vector *result = read_file_lines("example.txt");

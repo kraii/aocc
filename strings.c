@@ -94,6 +94,13 @@ string *string_copy(const size_t capacity, const string *original) {
     return string_new(capacity, original->buffer, min(capacity, original->len));
 }
 
+void string_copy_to(string *dest, const string *src) {
+    const size_t len = min(src->len, dest->cap);
+    memcpy(dest->buffer, src->buffer, len * sizeof(char));
+    dest->len = len;
+    terminate(dest);
+}
+
 /**
  * @return A newly allocated string with the result of concatenating l and r
  */
@@ -240,6 +247,29 @@ vector *string_split(const string *src, const string *delim) {
     return result;
 }
 
+bool string_tok(string *dest,  const string *src, size_t *posp, const string *delim) {
+    const size_t pos = *posp;
+    if (pos >= src->len || src->len == 0) {
+        return false;
+    }
+    const int match = string_find_at(src, delim, pos);
+    size_t to_copy;
+    if (match == -1) {
+        to_copy = src->len - pos;
+        *posp = src->len;
+    } else {
+        *posp = match + delim->len;
+        to_copy = match - pos;
+    }
+
+    if (to_copy > src->len) {
+        // overflow so nothing to copy
+        return false;
+    }
+    string_set(dest, &src->buffer[pos], to_copy);
+    return match != -1;
+}
+
 bool string_set_cap(string *s, const size_t capacity) {
     assert(capacity >= s->len);
     char *buff = realloc(s->buffer, sizeof(char) * (capacity + 1));
@@ -271,4 +301,11 @@ void string_trim(string *s) {
         s->len--;
     }
     terminate(s);
+}
+
+long string_to_l(string *s) {
+    char *end;
+    const long result = strtol(s->buffer, &end, 10);
+    assert(end != s->buffer);
+    return result;
 }

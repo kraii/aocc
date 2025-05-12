@@ -282,3 +282,33 @@ Test(string, string_trim_blank) {
     cr_assert_eq(string_len(target), 0);
     free(target);
 }
+
+Test(string, string_to_l) {
+    string *target = string_new_l("12345");
+    cr_assert_eq(string_to_l(target), 12345L);
+    free(target);
+}
+
+Test(string_tok, success) {
+    string *dest = string_new_empty(16);
+    const string src = string_l("Waffle man rules");
+    const string delim = string_l(" ");
+
+    size_t pos = 0;
+    bool complete = string_tok(dest, &src, &pos, &delim);
+    cr_assert_eq(complete, true);
+    cr_assert_str_eq(string_c(dest), "Waffle");
+    cr_assert_eq(pos, 7);
+
+    complete = string_tok(dest, &src, &pos, &delim);
+    cr_assert_eq(complete, true);
+    cr_assert_str_eq(string_c(dest), "man");
+    cr_assert_eq(pos, 11);
+
+    complete = string_tok(dest, &src, &pos, &delim);
+    cr_assert_eq(complete, false);
+    cr_assert_str_eq(string_c(dest), "rules");
+    cr_assert_eq(pos, 16);
+
+    free(dest);
+}
