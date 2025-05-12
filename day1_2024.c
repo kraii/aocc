@@ -21,17 +21,21 @@ void part_1(const size_t n, const long *ls, const long *rs) {
 }
 
 void part_2(const size_t n, const long *ls, const long *rs) {
-    long *counts = calloc(rs[n-1], sizeof(long));
+    const long min = rs[0];
+    const long max = rs[n - 1];
+    long *counts = calloc(max - min, sizeof(long));
     if (counts == NULL) return;
 
     for (size_t i = 0; i < n; i++) {
-        counts[rs[i]]++;
+        counts[rs[i] - min]++;
     }
 
     long similarity = 0;
     for (size_t i = 0; i < n; i++) {
         const long l = ls[i];
-        similarity += l * counts[l];
+        const long ci = l - min;
+        if (ci < 0 || ci > max - min - 1) continue;
+        similarity += l * counts[ci];
     }
 
     free(counts);
