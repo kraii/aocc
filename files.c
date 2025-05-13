@@ -4,10 +4,13 @@
 #include "strings.h"
 #include "files.h"
 
+#include <assert.h>
+
 #define BUFFER_SIZE 200
 
 vector *read_file_lines(const char *file_path) {
     FILE *f = fopen(file_path, "r");
+    assert(f != NULL);
     vector *result = vector_new(sizeof(string *));
     char buffer[BUFFER_SIZE];
 

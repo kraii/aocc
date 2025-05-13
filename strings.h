@@ -28,7 +28,7 @@ int string_find_c(const string *haystack, char *needle, size_t n);
 bool string_contains(const string *haystack, const string *needle);
 string *string_new_substring(const string *s, size_t start, size_t end);
 vector *string_split(const string *src, const string *delim);
-bool string_tok(string *dest, const string *src, size_t *pos, const string *delim);
+bool string_tok(string *dest, const string *src, size_t *pos_p, const string *delim);
 bool string_set_cap(string *s, size_t capacity);
 const char *string_c(const string *s);
 void string_trim(string *s);

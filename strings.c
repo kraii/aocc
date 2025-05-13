@@ -247,8 +247,8 @@ vector *string_split(const string *src, const string *delim) {
     return result;
 }
 
-bool string_tok(string *dest,  const string *src, size_t *posp, const string *delim) {
-    const size_t pos = *posp;
+bool string_tok(string *dest,  const string *src, size_t *pos_p, const string *delim) {
+    const size_t pos = *pos_p;
     if (pos >= src->len || src->len == 0) {
         return false;
     }
@@ -256,9 +256,9 @@ bool string_tok(string *dest,  const string *src, size_t *posp, const string *de
     size_t to_copy;
     if (match == -1) {
         to_copy = src->len - pos;
-        *posp = src->len;
+        *pos_p = src->len;
     } else {
-        *posp = match + delim->len;
+        *pos_p = match + delim->len;
         to_copy = match - pos;
     }
 
@@ -266,8 +266,9 @@ bool string_tok(string *dest,  const string *src, size_t *posp, const string *de
         // overflow so nothing to copy
         return false;
     }
+
     string_set(dest, &src->buffer[pos], to_copy);
-    return match != -1;
+    return true;
 }
 
 bool string_set_cap(string *s, const size_t capacity) {

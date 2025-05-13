@@ -21,7 +21,7 @@ strings_lib = library('strings', 'strings.c', link_with: [vector_lib])
 files_lib = library('files', 'files.c', link_with: [vector_lib, strings_lib])
 
 
-cal_2024 = [ 'day1' ]
+cal_2024 = [ 'day1', 'day2' ]
 foreach d : cal_2024
     name = d + '_2024'
     executable(name,

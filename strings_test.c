@@ -5,6 +5,8 @@
 #include <stdarg.h>
 #include "strings.h"
 
+#include <stdio.h>
+
 Test(strings, new_empty_string) {
     string *s = string_new_empty(5);
 
@@ -311,4 +313,22 @@ Test(string_tok, success) {
     cr_assert_eq(pos, 16);
 
     free(dest);
+}
+
+Test(string_tok, example_2) {
+    string *dest = string_new_empty(16);
+    const string delim = string_l(" ");
+    size_t pos = 0;
+    const string src = string_l("8 6 4 4 1");
+    unsigned i = 0;
+
+    while (string_tok(dest, &src, &pos, &delim)) {
+        const char *expected[5] = { "8", "6", "4", "4", "1"};
+        cr_assert_str_eq(string_c(dest), expected[i]);
+        i++;
+    }
+    cr_assert_eq(i, 5);
+
+    free(dest);
+
 }
