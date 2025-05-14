@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "vector.h"
 #include "strings.h"
@@ -16,7 +17,7 @@ typedef struct report report;
 bool is_safe(const report *report) {
     int diffs[9];
     for (unsigned i = 0; i < report->n - 1; i++) {
-        diffs[i] = report->levels[i+1] - report->levels[i];
+        diffs[i] = report->levels[i + 1] - report->levels[i];
     }
     const bool positive = diffs[0] > 0;
     for (unsigned i = 0; i < report->n - 1; i++) {
@@ -28,6 +29,14 @@ bool is_safe(const report *report) {
             return false;
     }
     return true;
+}
+
+void remove_at(report *dest, const report *src, const int i) {
+    memcpy(dest, src, sizeof(report));
+    if (i != src->n - 1) {
+        memmove(&dest->levels[i], &dest->levels[i + 1], sizeof(unsigned) * src->n - i);
+    }
+    dest->n--;
 }
 
 int main(const int argc, char *argv[]) {
@@ -48,14 +57,25 @@ int main(const int argc, char *argv[]) {
     }
 
     unsigned safe = 0;
-
+    unsigned safe_with_dampener = 0;
+    report temp = {0, {}};
     for (size_t i = 0; i < n; i++) {
         if (is_safe(&reports[i])) {
             safe++;
+        } else {
+            const size_t len = reports[i].n;
+            for (size_t j = 0; j < len; j++) {
+                remove_at(&temp, &reports[i], j);
+                if (is_safe(&temp)) {
+                    safe_with_dampener++;
+                    break;
+                }
+            }
         }
     }
 
     printf("Part 1 %u\n", safe);
+    printf("Part 2 %u\n", safe + safe_with_dampener);
 
     vector_free(lines);
     string_free(buffer);

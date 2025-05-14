@@ -62,7 +62,7 @@ int main(const int argc, char *argv[]) {
         const string *line = vector_get_p(lines, i);
         assert(string_tok(buffer, line, &pos, &delim) == true);
         const long l = string_to_l(buffer);
-        assert(string_tok(buffer, line, &pos, &delim) == false);
+        assert(string_tok(buffer, line, &pos, &delim) == true);
         const long r = string_to_l(buffer);
         ls[i] = l;
         rs[i] = r;
