@@ -307,3 +307,10 @@ str vector_get_str(const vector *vec, const size_t i) {
     assert(r != NULL);
     return *(str *) r;
 }
+
+void str_vector_free(vector *vec) {
+    for (size_t i = 0; i < vector_len(vec); i++) {
+        str_free(vector_get_str(vec, i));
+    }
+    vector_free(vec);
+}

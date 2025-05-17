@@ -1,6 +1,7 @@
 #ifndef AOCC_STRING
 #define AOCC_STRING
 #include "vector.h"
+
 struct string {
     size_t cap;
     size_t len;
@@ -37,6 +38,7 @@ void str_trim(str *s);
 long str_to_long(str s);
 
 str vector_get_str(const vector *vec, size_t i);
+void str_vector_free(vector *vec);
 
 
 #define str_set_l(s, value) str_set(s, value, sizeof(value)-1)
