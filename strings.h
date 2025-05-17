@@ -6,33 +6,37 @@ struct string {
     size_t len;
     char *buffer;
 };
-typedef struct string string;
+typedef struct string str;
 
-string *string_new_empty(size_t capacity);
-string string_wrap(char *s, size_t n);
-void string_free(string *s);
-size_t string_len(const string *s);
-void string_set(string *s, const char *value, size_t len);
-string *string_new(size_t capacity, const char *value, size_t len);
-string *string_copy(size_t capacity, const string *original);
-void string_copy_to(string *dest, const string *src);
-string *string_cat_new(const string *l, const string *r);
-size_t string_cap(const string *s);
-size_t string_rem_cap(const string *s);
-void string_cat_l(string *l, const string *r);
-bool string_eq(const string *a, const string *b);
-bool string_eq_c(const string *a, char* literal, size_t n);
-int string_find_at(const string *haystack, const string *needle, size_t start);
-int string_find(const string *haystack, const string *needle);
-int string_find_c(const string *haystack, char *needle, size_t n);
-bool string_contains(const string *haystack, const string *needle);
-string *string_new_substring(const string *s, size_t start, size_t end);
-vector *string_split(const string *src, const string *delim);
-bool string_tok(string *dest, const string *src, size_t *pos_p, const string *delim);
-bool string_set_cap(string *s, size_t capacity);
-const char *string_c(const string *s);
-void string_trim(string *s);
-long string_to_l(string *s);
+bool str_is_null(str s);
+str str_new_empty(size_t capacity);
+str string_wrap(char *s, size_t n);
+void string_free(str s);
+size_t string_len(str s);
+void string_set(str *s, const char *value, size_t len);
+
+str string_new(size_t capacity, const char *value, size_t len);
+str string_copy(size_t capacity, str original);
+void string_copy_to(str *dest, str src);
+str string_cat_new(str l, str r);
+size_t string_cap(str s);
+size_t string_rem_cap(str s);
+void string_cat_l(str *l, str r);
+bool string_eq(str a, str b);
+bool string_eq_c(str a, const char* literal, size_t n);
+int string_find_at(str haystack, str needle, size_t start);
+int string_find(str haystack, str needle);
+int string_find_c(str haystack, const char *needle, size_t n);
+bool string_contains(str haystack, str needle);
+str string_new_substring(str s, size_t start, size_t end);
+vector *string_split(str src, str delim);
+bool string_tok(str *dest, str src, size_t *pos_p, str delim);
+bool string_set_cap(str *s, size_t capacity);
+const char *string_c(str s);
+void string_trim(str *s);
+long string_to_l(str s);
+
+str vector_get_str(const vector *vec, size_t i);
 
 
 #define string_set_l(s, value) string_set(s, value, sizeof(value)-1)

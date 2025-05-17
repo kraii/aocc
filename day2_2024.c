@@ -45,13 +45,13 @@ int main(const int argc, char *argv[]) {
     vector *lines = read_file_lines(argv[1]);
     const size_t n = vector_len(lines);
     report *reports = calloc(n, sizeof(report));
-    string *buffer = string_new_empty(30);
-    const string delim = string_l(" ");
+    str buffer = str_new_empty(30);
+    const str delim = string_l(" ");
 
     for (size_t i = 0; i < n; i++) {
         report *report = &reports[i];
         size_t pos = 0;
-        while (string_tok(buffer, vector_get_p(lines, i), &pos, &delim)) {
+        while (string_tok(&buffer, vector_get_str(lines, i), &pos, delim)) {
             report->levels[report->n++] = (unsigned) string_to_l(buffer);
         }
     }

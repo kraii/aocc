@@ -24,7 +24,7 @@ vector *vector_newc(const size_t elem_size, const size_t initial_capacity) {
     v->len = 0;
     v->cap = initial_capacity;
     v->elem_size = elem_size;
-    void *data = calloc(initial_capacity, sizeof(elem_size));
+    void *data = calloc(initial_capacity, elem_size);
     if (data == NULL) {
         free(v);
         return NULL;

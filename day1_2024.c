@@ -46,23 +46,23 @@ int main(const int argc, char *argv[]) {
     assert(argc > 1);
 
     vector *lines = read_file_lines(argv[1]);
-    const string delim = string_l("   ");
-    string *buffer = string_new_empty(5);
+    const str delim = string_l("   ");
+    str buffer = str_new_empty(5);
 
     const size_t n = vector_len(lines);
     long *ls = calloc(n, sizeof(long));
     long *rs = calloc(n, sizeof(long));
 
-    if (ls == NULL || rs == NULL || lines == NULL || buffer == NULL) {
+    if (ls == NULL || rs == NULL || lines == NULL || str_is_null(buffer)) {
         return -1;
     }
 
     for (size_t i = 0; i < n; i++) {
         size_t pos = 0;
-        const string *line = vector_get_p(lines, i);
-        assert(string_tok(buffer, line, &pos, &delim) == true);
+        const str line = vector_get_str(lines, i);
+        assert(string_tok(&buffer, line, &pos, delim) == true);
         const long l = string_to_l(buffer);
-        assert(string_tok(buffer, line, &pos, &delim) == true);
+        assert(string_tok(&buffer, line, &pos, delim) == true);
         const long r = string_to_l(buffer);
         ls[i] = l;
         rs[i] = r;
@@ -74,7 +74,7 @@ int main(const int argc, char *argv[]) {
     part_1(n, ls, rs);
     part_2(n, ls, rs);
 
-    free(buffer);
+    string_free(buffer);
     vector_free_all(lines);
     free(ls);
     free(rs);
