@@ -16,14 +16,14 @@ vector *read_file_lines(const char *file_path) {
 
     while (fgets(buffer, BUFFER_SIZE, f)) {
         size_t len = strlen(buffer);
-        str line = string_new(len, buffer, len);
+        str line = str_new(len, buffer, len);
         while (len > 0 && buffer[len - 1] != '\n' && fgets(buffer, BUFFER_SIZE, f)) {
             len = strlen(buffer);
-            string_set_cap(&line, string_cap(line) + len);
-            const str more = string_wrap(buffer, len);
-            string_cat_l(&line, more);
+            str_set_cap(&line, str_cap(line) + len);
+            const str more = str_wrap(buffer, len);
+            str_cat_l(&line, more);
         }
-        string_trim(&line);
+        str_trim(&line);
         vector_push(result, &line);
     }
 

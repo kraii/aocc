@@ -36,12 +36,12 @@ str str_new_empty(const size_t capacity) {
     return result;
 }
 
-str string_wrap(char *s, const size_t n) {
+str str_wrap(char *s, const size_t n) {
     const str result = {n, n, s};
     return result;
 }
 
-void string_free(const str s) {
+void str_free(const str s) {
     free(s.buffer);
 }
 
@@ -53,7 +53,7 @@ static size_t min(const size_t a, const size_t b) {
 /**
  * @return the length of the given string
  */
-size_t string_len(const str s) {
+size_t str_len(const str s) {
     return s.len;
 }
 
@@ -61,7 +61,7 @@ size_t string_len(const str s) {
  * Sets the contents of the given string to the value of buffer
  * If len > capacity will only copy up to capacity
  */
-void string_set(str *s, const char *value, const size_t len) {
+void str_set(str *s, const char *value, const size_t len) {
     memcpy(s->buffer, value, min(len, s->cap) * sizeof(char));
     s->len = min(len, s->cap);
     terminate(s);
@@ -71,12 +71,12 @@ void string_set(str *s, const char *value, const size_t len) {
  * Allocates a new string with the value of the given buffer
  * If len > capacity will only copy up to capacity
  */
-str string_new(const size_t capacity, const char *value, const size_t len) {
+str str_new(const size_t capacity, const char *value, const size_t len) {
     str s = str_new_empty(capacity);
     if (s.buffer == NULL) {
         return str_null;
     }
-    string_set(&s, value, len);
+    str_set(&s, value, len);
     return s;
 }
 
@@ -84,11 +84,11 @@ str string_new(const size_t capacity, const char *value, const size_t len) {
  * Allocates a new string that is a copy of the given string
  * If len of the original > capacity will only copy up to capacity
  */
-str string_copy(const size_t capacity, const str original) {
-    return string_new(capacity, original.buffer, min(capacity, original.len));
+str str_copy(const size_t capacity, const str original) {
+    return str_new(capacity, original.buffer, min(capacity, original.len));
 }
 
-void string_copy_to(str *dest, const str src) {
+void str_copy_to(str *dest, const str src) {
     const size_t len = min(src.len, dest->cap);
     memcpy(dest->buffer, src.buffer, len * sizeof(char));
     dest->len = len;
@@ -98,8 +98,8 @@ void string_copy_to(str *dest, const str src) {
 /**
  * @return A newly allocated string with the result of concatenating l and r
  */
-str string_cat_new(const str l, const str r) {
-    str result = string_copy(l.len + r.len, l);
+str str_cat_new(const str l, const str r) {
+    str result = str_copy(l.len + r.len, l);
     memcpy(result.buffer + l.len, r.buffer, r.len * sizeof(char));
     result.len = l.len + r.len;
     terminate(&result);
@@ -109,14 +109,14 @@ str string_cat_new(const str l, const str r) {
 /**
  * @return the total capacity of the given string
  */
-size_t string_cap(const str s) {
+size_t str_cap(const str s) {
     return s.cap;
 }
 
 /**
  * @return The remaining capacity of the given string
  */
-size_t string_rem_cap(const str s) {
+size_t str_rem_cap(const str s) {
     return s.cap - s.len;
 }
 
@@ -124,8 +124,8 @@ size_t string_rem_cap(const str s) {
  * Write the result of concatenating l and r into l
  * will truncate at the max capacity of l
  */
-void string_cat_l(str *l, const str r) {
-    const size_t rem_cap = string_rem_cap(*l);
+void str_cat_l(str *l, const str r) {
+    const size_t rem_cap = str_rem_cap(*l);
     if (rem_cap <= 0) {
         // No space to concat anything so give up
         return;
@@ -142,24 +142,24 @@ void string_cat_l(str *l, const str r) {
  * @return true if the given strings have equal contents false otherwise.
  * Capacity is not considered.
  */
-bool string_eq(const str a, const str b) {
+bool str_eq(const str a, const str b) {
     if (a.len != b.len) {
         return false;
     }
     return memcmp(a.buffer, b.buffer, a.len * sizeof(char)) == 0;
 }
 
-bool string_eq_c(const str a, const char *literal, const size_t n) {
+bool str_eq_c(const str a, const char *literal, const size_t n) {
     const str l = {n, n, (char *) literal};
-    return string_eq(a, l);
+    return str_eq(a, l);
 }
 
 /**
  * @return The first index of needle in haystack, or -1 if not found
  */
-int string_find_at(const str haystack, const str needle, const size_t start) {
-    const int n = string_len(needle);
-    const int m = string_len(haystack);
+int str_find_at(const str haystack, const str needle, const size_t start) {
+    const int n = str_len(needle);
+    const int m = str_len(haystack);
 
     if (n == 0) {
         return 0;
@@ -190,21 +190,21 @@ int string_find_at(const str haystack, const str needle, const size_t start) {
     return -1;
 }
 
-int string_find(const str haystack, const str needle) {
-    return string_find_at(haystack, needle, 0);
+int str_find(const str haystack, const str needle) {
+    return str_find_at(haystack, needle, 0);
 }
 
 
 /**
  * @return The first index of needle in haystack, or -1 if not found
  */
-int string_find_c(const str haystack, const char *needle, const size_t n) {
+int str_find_c(const str haystack, const char *needle, const size_t n) {
     const str target = {n, n, (char *) needle};
-    return string_find(haystack, target);
+    return str_find(haystack, target);
 }
 
-bool string_contains(const str haystack, const str needle) {
-    return string_find(haystack, needle) != -1;
+bool str_contains(const str haystack, const str needle) {
+    return str_find(haystack, needle) != -1;
 }
 
 /**
@@ -214,36 +214,36 @@ bool string_contains(const str haystack, const str needle) {
  * @return A new string containing the part of the string between the given indexes.
  * NULL if start >= end or if start is out of bounds
  */
-str string_new_substring(const str s, const size_t start, const size_t end) {
+str str_new_substr(const str s, const size_t start, const size_t end) {
     if (start >= s.len || start >= end) {
         return str_null;
     }
     const size_t len = min(end, s.len) - start;
-    return string_new(len, s.buffer + start, len);
+    return str_new(len, s.buffer + start, len);
 }
 
-vector *string_split(const str src, const str delim) {
+vector *str_split(const str src, const str delim) {
     vector *result = vector_new(sizeof(str));
-    int match = string_find(src, delim);
+    int match = str_find(src, delim);
     size_t index = 0;
     while (match != -1 && index < src.len) {
-        const str token = string_new_substring(src, index, match);
+        const str token = str_new_substr(src, index, match);
         vector_push(result, &token);
         index = match + delim.len;
-        match = string_find_at(src, delim, index);
+        match = str_find_at(src, delim, index);
     }
-    const str token = string_new_substring(src, index, src.len + 1);
+    const str token = str_new_substr(src, index, src.len + 1);
     vector_push(result, &token);
 
     return result;
 }
 
-bool string_tok(str *dest, const str src, size_t *pos_p, const str delim) {
+bool str_tok(str *dest, const str src, size_t *pos_p, const str delim) {
     const size_t pos = *pos_p;
     if (pos >= src.len || src.len == 0) {
         return false;
     }
-    const int match = string_find_at(src, delim, pos);
+    const int match = str_find_at(src, delim, pos);
     size_t to_copy;
     if (match == -1) {
         to_copy = src.len - pos;
@@ -258,11 +258,11 @@ bool string_tok(str *dest, const str src, size_t *pos_p, const str delim) {
         return false;
     }
 
-    string_set(dest, &src.buffer[pos], to_copy);
+    str_set(dest, &src.buffer[pos], to_copy);
     return true;
 }
 
-bool string_set_cap(str *s, const size_t capacity) {
+bool str_set_cap(str *s, const size_t capacity) {
     assert(capacity >= s->len);
     char *buff = realloc(s->buffer, sizeof(char) * (capacity + 1));
     if (buff == NULL) {
@@ -273,11 +273,11 @@ bool string_set_cap(str *s, const size_t capacity) {
     return true;
 }
 
-const char *string_c(const str s) {
+const char *strc(const str s) {
     return s.buffer;
 }
 
-void string_trim(str *s) {
+void str_trim(str *s) {
     size_t i = 0;
 
     while (i < s->len - 1 && isspace(s->buffer[i])) {
@@ -295,7 +295,7 @@ void string_trim(str *s) {
     terminate(s);
 }
 
-long string_to_l(const str s) {
+long str_to_long(const str s) {
     char *end;
     const long result = strtol(s.buffer, &end, 10);
     assert(end != s.buffer);

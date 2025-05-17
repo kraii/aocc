@@ -46,13 +46,13 @@ int main(const int argc, char *argv[]) {
     const size_t n = vector_len(lines);
     report *reports = calloc(n, sizeof(report));
     str buffer = str_new_empty(30);
-    const str delim = string_l(" ");
+    const str delim = str_l(" ");
 
     for (size_t i = 0; i < n; i++) {
         report *report = &reports[i];
         size_t pos = 0;
-        while (string_tok(&buffer, vector_get_str(lines, i), &pos, delim)) {
-            report->levels[report->n++] = (unsigned) string_to_l(buffer);
+        while (str_tok(&buffer, vector_get_str(lines, i), &pos, delim)) {
+            report->levels[report->n++] = (unsigned) str_to_long(buffer);
         }
     }
 
@@ -78,6 +78,6 @@ int main(const int argc, char *argv[]) {
     printf("Part 2 %u\n", safe + safe_with_dampener);
 
     vector_free(lines);
-    string_free(buffer);
+    str_free(buffer);
     free(reports);
 }

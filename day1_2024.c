@@ -46,7 +46,7 @@ int main(const int argc, char *argv[]) {
     assert(argc > 1);
 
     vector *lines = read_file_lines(argv[1]);
-    const str delim = string_l("   ");
+    const str delim = str_l("   ");
     str buffer = str_new_empty(5);
 
     const size_t n = vector_len(lines);
@@ -60,10 +60,10 @@ int main(const int argc, char *argv[]) {
     for (size_t i = 0; i < n; i++) {
         size_t pos = 0;
         const str line = vector_get_str(lines, i);
-        assert(string_tok(&buffer, line, &pos, delim) == true);
-        const long l = string_to_l(buffer);
-        assert(string_tok(&buffer, line, &pos, delim) == true);
-        const long r = string_to_l(buffer);
+        assert(str_tok(&buffer, line, &pos, delim) == true);
+        const long l = str_to_long(buffer);
+        assert(str_tok(&buffer, line, &pos, delim) == true);
+        const long r = str_to_long(buffer);
         ls[i] = l;
         rs[i] = r;
     }
@@ -74,7 +74,7 @@ int main(const int argc, char *argv[]) {
     part_1(n, ls, rs);
     part_2(n, ls, rs);
 
-    string_free(buffer);
+    str_free(buffer);
     vector_free_all(lines);
     free(ls);
     free(rs);
