@@ -8,6 +8,7 @@ struct string {
     char *buffer;
 };
 typedef struct string str;
+typedef vector str_vec;
 
 bool str_is_null(str s);
 str str_new_empty(size_t capacity);
@@ -30,15 +31,15 @@ int str_find(str haystack, str needle);
 int str_find_c(str haystack, const char *needle, size_t n);
 bool str_contains(str haystack, str needle);
 str str_new_substr(str s, size_t start, size_t end);
-vector *str_split(str src, str delim);
+str_vec *str_split(str src, str delim);
 bool str_tok(str *dest, str src, size_t *pos_p, str delim);
 bool str_set_cap(str *s, size_t capacity);
 const char *strc(str s);
 void str_trim(str *s);
 long str_to_long(str s);
 
-str vector_get_str(const vector *vec, size_t i);
-void str_vector_free(vector *vec);
+str vector_get_str(const str_vec *vec, size_t i);
+void str_vector_free(str_vec *vec);
 
 
 #define str_set_l(s, value) str_set(s, value, sizeof(value)-1)

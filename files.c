@@ -8,10 +8,10 @@
 
 #define BUFFER_SIZE 200
 
-vector *read_file_lines(const char *file_path) {
+str_vec *read_file_lines(const char *file_path) {
     FILE *f = fopen(file_path, "r");
     assert(f != NULL);
-    vector *result = vector_new(sizeof(str));
+    str_vec *result = vector_new(sizeof(str));
     char buffer[BUFFER_SIZE];
 
     while (fgets(buffer, BUFFER_SIZE, f)) {

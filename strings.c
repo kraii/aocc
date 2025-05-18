@@ -222,8 +222,8 @@ str str_new_substr(const str s, const size_t start, const size_t end) {
     return str_new(len, s.buffer + start, len);
 }
 
-vector *str_split(const str src, const str delim) {
-    vector *result = vector_new(sizeof(str));
+str_vec *str_split(const str src, const str delim) {
+    str_vec *result = vector_new(sizeof(str));
     int match = str_find(src, delim);
     size_t index = 0;
     while (match != -1 && index < src.len) {
@@ -302,13 +302,13 @@ long str_to_long(const str s) {
     return result;
 }
 
-str vector_get_str(const vector *vec, const size_t i) {
+str vector_get_str(const str_vec *vec, const size_t i) {
     void *r = vector_get(vec, i);
     assert(r != NULL);
     return *(str *) r;
 }
 
-void str_vector_free(vector *vec) {
+void str_vector_free(str_vec *vec) {
     for (size_t i = 0; i < vector_len(vec); i++) {
         str_free(vector_get_str(vec, i));
     }
