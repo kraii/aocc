@@ -1,6 +1,7 @@
 #include "regex.h"
 
 #include <stdio.h>
+#include <string.h>
 
 pattern *re_compile(const str p, int *err_code) {
     PCRE2_SIZE err_offset;
@@ -90,6 +91,15 @@ bool re_get_group(const match_data *data, str *dest, const size_t index) {
     rc = pcre2_substring_copy_bynumber(data->pcre2, index, (PCRE2_UCHAR*) dest->buffer, &len_capture);
     dest->len = len_capture;
     return rc == 0;
+}
+
+str re_get_error_message(const int err_code) {
+    constexpr int max_error_size = 100;
+    char err[max_error_size];
+
+    pcre2_get_error_message(err_code, (PCRE2_UCHAR*)err, max_error_size);
+    const size_t len = strlen(err);
+    return str_new(len, err, len);
 }
 
 void re_free_match(match_data *data) {

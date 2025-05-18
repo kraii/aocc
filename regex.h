@@ -20,6 +20,7 @@ bool re_next_match(match_data *data);
 long re_get_index(const match_data *data);
 bool re_get_group(const match_data *data, str *dest, size_t index);
 
+str re_get_error_message(int err_code);
 void re_free_match(match_data *data);
 
 #endif
