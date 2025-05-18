@@ -1,23 +1,51 @@
-#define PCRE2_CODE_UNIT_WIDTH 8
-#include <pcre2.h>
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
-int main(...) {
-    const char *pattern = "[0-9]";
+#include "files.h"
+#include "regex.h"
 
-    pcre2_match_data *match_data = pcre2_match_data_create_from_pattern(re, NULL);
-    const char *matchy = "123abc2";
-    const int result_code = pcre2_match(re, (PCRE2_SPTR)matchy, strlen(matchy), 0, 0, match_data, NULL);
-    if (result_code < 0) {
-        printf("Pooper\n");
-        return - 2;
+int main(const int argc, const char *argv[]) {
+    assert(argc > 1);
+
+    vector *lines = read_file_lines(argv[1]);
+
+    size_t total_len = 0;
+    for (size_t i = 0; i < vector_len(lines); i++) {
+        const str line = vector_get_str(lines, i);
+        total_len += str_len(line);
     }
 
-    PCRE2_SIZE *ovector = pcre2_get_ovector_pointer(match_data);
-    for (int i = 0; i < result_code; i++){
-        const PCRE2_SIZE substring_start = ovector[2*i];
-        const PCRE2_SIZE substring_length = ovector[2*i+1] - ovector[2*i];
-        printf("%2d: %d, %d", i, (int)substring_length, substring_start);
+
+    str input = str_new_empty(total_len);
+    for (size_t i = 0; i < vector_len(lines); i++) {
+        str_cat_l(&input, vector_get_str(lines, i));
     }
+
+    int err_code;
+    pattern *p = re_compile(str_l("mul\\(([0-9]+),([0-9]+)\\)"), &err_code);
+    if (p == NULL) {
+        char err[100];
+        pcre2_get_error_message(err_code, err, 100);
+        printf("Compile error %s\n", err);
+        return -1;
+    }
+
+    match_data *match = re_prepare_match(p, input);
+    str buff = str_new_empty(20);
+    long total = 0;
+    while (re_next_match(match)) {
+        re_get_group(match, &buff, 1);
+        const long x = str_to_long(buff);
+        re_get_group(match, &buff, 2);
+        const long y = str_to_long(buff);
+        total += x * y;
+    }
+    printf("Part 1 %ld \n", total);
+
+    re_free_match(match);
+    re_free_pat(p);
+    str_free(input);
+    str_vector_free(lines);
 }
+

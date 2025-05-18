@@ -28,7 +28,7 @@ foreach d : cal_2024
     executable(
         name,
         name + '.c',
-        link_with : [vector_lib, strings_lib, files_lib],
+        link_with : [vector_lib, strings_lib, files_lib, regex_lib],
         dependencies: [lib_pcre2]
     )
 endforeach
