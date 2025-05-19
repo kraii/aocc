@@ -2,7 +2,7 @@
 #include "files.h"
 
 Test(files, read_file_lines) {
-    vector *result = read_file_lines("example.txt");
+    vector *result = read_file_lines(strlit("example.txt"));
     cr_assert_eq(vector_len(result), 5);
     cr_assert_str_eq(strc(vector_get_str(result, 0)), "line 1");
     cr_assert_str_eq(strc(vector_get_str(result, 1)), "line 2 is longer than line 1");

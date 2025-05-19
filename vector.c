@@ -12,7 +12,7 @@ struct vector {
     size_t len;
     size_t cap;
     size_t elem_size;
-    void *data;
+    void *restrict data;
 };
 
 vector *vector_newc(const size_t elem_size, const size_t initial_capacity) {

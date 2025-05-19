@@ -45,8 +45,8 @@ void part_2(const size_t n, const long *ls, const long *rs) {
 int main(const int argc, char *argv[]) {
     assert(argc > 1);
 
-    vector *lines = read_file_lines(argv[1]);
-    const str delim = str_l("   ");
+    vector *lines = read_file_lines(str_wrap_c(argv[1]));
+    const str delim = strlit("   ");
     str buffer = str_new_empty(5);
 
     const size_t n = vector_len(lines);

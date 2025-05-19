@@ -41,6 +41,12 @@ str str_wrap(char *s, const size_t n) {
     return result;
 }
 
+str str_wrap_c(char *s) {
+    const int len = strlen(s);
+    const str result = {len, len, s};
+    return result;
+}
+
 void str_free(const str s) {
     free(s.buffer);
 }

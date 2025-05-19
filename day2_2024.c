@@ -42,11 +42,11 @@ void remove_at(report *dest, const report *src, const int i) {
 int main(const int argc, char *argv[]) {
     assert(argc > 1);
 
-    vector *lines = read_file_lines(argv[1]);
+    vector *lines = read_file_lines(str_wrap_c(argv[1]));
     const size_t n = vector_len(lines);
     report *reports = calloc(n, sizeof(report));
     str buffer = str_new_empty(30);
-    const str delim = str_l(" ");
+    const str delim = strlit(" ");
 
     for (size_t i = 0; i < n; i++) {
         report *report = &reports[i];

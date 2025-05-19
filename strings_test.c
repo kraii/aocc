@@ -220,15 +220,15 @@ Test(strings, substring_errors) {
 }
 
 Test(strings, find_single_char) {
-    const str src = str_l("a big potato farm was very nice");
-    const str delim = str_l("b");
+    const str src = strlit("a big potato farm was very nice");
+    const str delim = strlit("b");
     const int result = str_find(src, delim);
     cr_expect_eq(result, 2);
 }
 
 Test(strings, string_split) {
-    const str src = str_l("Waffle man likes to iron");
-    const str delim = str_l(" ");
+    const str src = strlit("Waffle man likes to iron");
+    const str delim = strlit(" ");
     vector *result = str_split(src, delim);
     const size_t tokens = vector_len(result);
     cr_assert_eq(tokens, 5, "Expect 5 tokens got %lu", tokens);
@@ -242,8 +242,8 @@ Test(strings, string_split) {
 }
 
 Test(string, string_split_no_match) {
-    const str src = str_l("Waffle man likes to iron");
-    const str delim = str_l("Z");
+    const str src = strlit("Waffle man likes to iron");
+    const str delim = strlit("Z");
     vector *result = str_split(src, delim);
     const size_t tokens = vector_len(result);
     cr_assert_eq(tokens, 1, "Expect 1 tokens got %lu", tokens);
@@ -291,8 +291,8 @@ Test(string, string_to_l) {
 
 Test(string_tok, success) {
     str dest = str_new_empty(16);
-    const str src = str_l("Waffle man rules");
-    const str delim = str_l(" ");
+    const str src = strlit("Waffle man rules");
+    const str delim = strlit(" ");
 
     size_t pos = 0;
     bool string_left = str_tok(&dest, src, &pos, delim);
@@ -318,9 +318,9 @@ Test(string_tok, success) {
 
 Test(string_tok, example_2) {
     str dest = str_new_empty(16);
-    const str delim = str_l(" ");
+    const str delim = strlit(" ");
     size_t pos = 0;
-    const str src = str_l("8 6 4 4 1");
+    const str src = strlit("8 6 4 4 1");
     unsigned i = 0;
 
     while (str_tok(&dest, src, &pos, delim)) {

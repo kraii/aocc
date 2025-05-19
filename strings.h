@@ -5,7 +5,7 @@
 struct string {
     size_t cap;
     size_t len;
-    char *buffer;
+    char *restrict buffer;
 };
 typedef struct string str;
 typedef vector str_vec;
@@ -13,6 +13,7 @@ typedef vector str_vec;
 bool str_is_null(str s);
 str str_new_empty(size_t capacity);
 str str_wrap(char *s, size_t n);
+str str_wrap_c(char *s);
 void str_free(str s);
 size_t str_len(str s);
 void str_set(str *s, const char *value, size_t len);
@@ -44,9 +45,8 @@ void str_vector_free(str_vec *vec);
 
 #define str_set_l(s, value) str_set(s, value, sizeof(value)-1)
 #define str_new_l(value) str_new(sizeof(value) - 1, value, sizeof(value) -1)
-#define str_l(value) str_wrap(value, sizeof(value) - 1)
+#define strlit(value) str_wrap(value, sizeof(value) - 1)
 #define str_eq_l(s, l) str_eq_c(s, l, sizeof(l) - 1)
 #define str_find_l(h, n) str_find_c(h, n, sizeof(n))
-
 
 #endif
