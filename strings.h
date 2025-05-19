@@ -5,7 +5,7 @@
 struct string {
     size_t cap;
     size_t len;
-    char *restrict buffer;
+    char *buffer;
 };
 typedef struct string str;
 typedef vector str_vec;

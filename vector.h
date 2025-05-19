@@ -1,5 +1,6 @@
 #ifndef AOCC_VECTOR
 #define AOCC_VECTOR
+#include "stddef.h"
 
 typedef struct vector vector;
 

@@ -5,7 +5,7 @@
 typedef struct grid {
     unsigned w;
     unsigned h;
-    char *restrict data;
+    char data[];
 } grid;
 
 typedef struct point {
@@ -21,6 +21,7 @@ constexpr point grid_directions[4] = {grid_dir_up, grid_dir_right, grid_dir_down
 
 grid *grid_from_file(str filepath);
 
-char grid_at(grid *g, point p);
+char grid_atp(const grid *g, point p);
+char grid_at(const grid *g, int x, int y);
 
 #endif
