@@ -3,9 +3,9 @@
 #include "vector.h"
 
 struct string {
-    size_t cap;
-    size_t len;
-    char *buffer;
+  size_t cap;
+  size_t len;
+  char *buffer;
 };
 typedef struct string str;
 typedef vector str_vec;
@@ -26,7 +26,7 @@ size_t str_cap(str s);
 size_t str_rem_cap(str s);
 void str_cat_l(str *l, str r);
 bool str_eq(str a, str b);
-bool str_eq_c(str a, const char* literal, size_t n);
+bool str_eq_c(str a, const char *literal, size_t n);
 int str_find_at(str haystack, str needle, size_t start);
 int str_find(str haystack, str needle);
 int str_find_c(str haystack, const char *needle, size_t n);
@@ -42,9 +42,8 @@ long str_to_long(str s);
 str vector_get_str(const str_vec *vec, size_t i);
 void str_vector_free(str_vec *vec);
 
-
-#define str_set_l(s, value) str_set(s, value, sizeof(value)-1)
-#define str_new_l(value) str_new(sizeof(value) - 1, value, sizeof(value) -1)
+#define str_set_l(s, value) str_set(s, value, sizeof(value) - 1)
+#define str_new_l(value) str_new(sizeof(value) - 1, value, sizeof(value) - 1)
 #define strlit(value) str_wrap(value, sizeof(value) - 1)
 #define str_eq_l(s, l) str_eq_c(s, l, sizeof(l) - 1)
 #define str_find_l(h, n) str_find_c(h, n, sizeof(n))

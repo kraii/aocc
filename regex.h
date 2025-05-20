@@ -1,8 +1,8 @@
 #ifndef AOCC_REGEX
 #define AOCC_REGEX
 #define PCRE2_CODE_UNIT_WIDTH 8
-#include <pcre2.h>
 #include "strings.h"
+#include <pcre2.h>
 
 typedef pcre2_code pattern;
 typedef struct match_data match_data;

@@ -23,7 +23,7 @@ files_lib = library('files', 'files.c', link_with : [vector_lib, strings_lib])
 regex_lib = library('regex', 'regex.c', link_with : [vector_lib, strings_lib], dependencies: [lib_pcre2])
 grid_lib = library('grid', 'grid.c', link_with: [files_lib, strings_lib, vector_lib])
 
-cal_2024 = ['day1', 'day2', 'day3']
+cal_2024 = ['day1', 'day2', 'day3', 'day4']
 foreach d : cal_2024
     name = d + '_2024'
     executable(
