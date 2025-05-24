@@ -34,8 +34,7 @@ bool is_safe(const report *report) {
 void remove_at(report *dest, const report *src, const int i) {
   memcpy(dest, src, sizeof(report));
   if (i != src->n - 1) {
-    memmove(&dest->levels[i], &dest->levels[i + 1],
-            sizeof(unsigned) * src->n - i);
+    memmove(&dest->levels[i], &dest->levels[i + 1], sizeof(unsigned) * src->n - i);
   }
   dest->n--;
 }

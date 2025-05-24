@@ -9,51 +9,46 @@ int find_xmas(const grid *grid, const int x, const int y) {
   const int h = grid_h(grid);
   int count = 0;
   // right
-  if (x + 3 < w && grid_at(grid, x + 1, y) == 'M' &&
-      grid_at(grid, x + 2, y) == 'A' && grid_at(grid, x + 3, y) == 'S')
+  if (x + 3 < w && grid_at(grid, x + 1, y) == 'M' && grid_at(grid, x + 2, y) == 'A' && grid_at(grid, x + 3, y) == 'S')
     count++;
 
   // left
-  if (x - 3 >= 0 && grid_at(grid, x - 1, y) == 'M' &&
-      grid_at(grid, x - 2, y) == 'A' && grid_at(grid, x - 3, y) == 'S')
+  if (x - 3 >= 0 && grid_at(grid, x - 1, y) == 'M' && grid_at(grid, x - 2, y) == 'A' && grid_at(grid, x - 3, y) == 'S')
     count++;
 
   // up
-  if (y - 3 >= 0 && grid_at(grid, x, y - 1) == 'M' &&
-      grid_at(grid, x, y - 2) == 'A' && grid_at(grid, x, y - 3) == 'S')
+  if (y - 3 >= 0 && grid_at(grid, x, y - 1) == 'M' && grid_at(grid, x, y - 2) == 'A' && grid_at(grid, x, y - 3) == 'S')
     count++;
 
   // down
-  if (y + 3 < h && grid_at(grid, x, y + 1) == 'M' &&
-      grid_at(grid, x, y + 2) == 'A' && grid_at(grid, x, y + 3) == 'S')
+  if (y + 3 < h && grid_at(grid, x, y + 1) == 'M' && grid_at(grid, x, y + 2) == 'A' && grid_at(grid, x, y + 3) == 'S')
     count++;
 
   // diagonal up-left
-  if (y - 3 >= 0 && x - 3 >= 0 && grid_at(grid, x - 1, y - 1) == 'M' &&
-      grid_at(grid, x - 2, y - 2) == 'A' && grid_at(grid, x - 3, y - 3) == 'S')
+  if (y - 3 >= 0 && x - 3 >= 0 && grid_at(grid, x - 1, y - 1) == 'M' && grid_at(grid, x - 2, y - 2) == 'A' &&
+      grid_at(grid, x - 3, y - 3) == 'S')
     count++;
 
   // diagonal up-right
-  if (y - 3 >= 0 && x + 3 < w && grid_at(grid, x + 1, y - 1) == 'M' &&
-      grid_at(grid, x + 2, y - 2) == 'A' && grid_at(grid, x + 3, y - 3) == 'S')
+  if (y - 3 >= 0 && x + 3 < w && grid_at(grid, x + 1, y - 1) == 'M' && grid_at(grid, x + 2, y - 2) == 'A' &&
+      grid_at(grid, x + 3, y - 3) == 'S')
     count++;
 
   // diagonal down-left
-  if (y + 3 < h && x - 3 >= 0 && grid_at(grid, x - 1, y + 1) == 'M' &&
-      grid_at(grid, x - 2, y + 2) == 'A' && grid_at(grid, x - 3, y + 3) == 'S')
+  if (y + 3 < h && x - 3 >= 0 && grid_at(grid, x - 1, y + 1) == 'M' && grid_at(grid, x - 2, y + 2) == 'A' &&
+      grid_at(grid, x - 3, y + 3) == 'S')
     count++;
 
   // diagonal down-right
-  if (y + 3 < h && x + 3 < w && grid_at(grid, x + 1, y + 1) == 'M' &&
-      grid_at(grid, x + 2, y + 2) == 'A' && grid_at(grid, x + 3, y + 3) == 'S')
+  if (y + 3 < h && x + 3 < w && grid_at(grid, x + 1, y + 1) == 'M' && grid_at(grid, x + 2, y + 2) == 'A' &&
+      grid_at(grid, x + 3, y + 3) == 'S')
     count++;
 
   return count;
 }
 
 bool is_x_mas(const grid *grid, const int x, const int y) {
-  const bool possible =
-      x > 0 && x < grid_w(grid) - 1 && y > 0 && y < grid_h(grid) - 1;
+  const bool possible = x > 0 && x < grid_w(grid) - 1 && y > 0 && y < grid_h(grid) - 1;
   if (!possible) {
     return false;
   }

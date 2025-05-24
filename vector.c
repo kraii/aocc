@@ -34,9 +34,7 @@ vector *vector_newc(const size_t elem_size, const size_t initial_capacity) {
   return v;
 }
 
-vector *vector_new(const size_t elem_size) {
-  return vector_newc(elem_size, VECTOR_DEFAULT_CAPACITY);
-}
+vector *vector_new(const size_t elem_size) { return vector_newc(elem_size, VECTOR_DEFAULT_CAPACITY); }
 
 static bool grow_if_req(vector *vec, const size_t i) {
   if (i > vec->cap) {
@@ -49,8 +47,7 @@ static bool grow_if_req(vector *vec, const size_t i) {
       return false;
     }
     vec->data = data;
-    memset(vec->data + vec->len * vec->elem_size, 0,
-           (new_cap - vec->len) * vec->elem_size);
+    memset(vec->data + vec->len * vec->elem_size, 0, (new_cap - vec->len) * vec->elem_size);
     vec->cap = new_cap;
   }
   return true;
@@ -105,12 +102,8 @@ void vector_set(const vector *vec, const size_t i, const void *e) {
   memcpy(vec->data + (i * vec->elem_size), e, vec->elem_size);
 }
 
-void vector_set_i(const vector *vec, const size_t i, const int e) {
-  vector_set(vec, i, &e);
-}
+void vector_set_i(const vector *vec, const size_t i, const int e) { vector_set(vec, i, &e); }
 
-void *vector_pop(vector *vec) {
-  return vec->data + vec->elem_size * --vec->len;
-}
+void *vector_pop(vector *vec) { return vec->data + vec->elem_size * --vec->len; }
 
 int vector_pop_i(vector *vec) { return *(int *)vector_pop(vec); }

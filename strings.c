@@ -182,9 +182,7 @@ int str_find_at(const str haystack, const str needle, const size_t start) {
   return -1;
 }
 
-int str_find(const str haystack, const str needle) {
-  return str_find_at(haystack, needle, 0);
-}
+int str_find(const str haystack, const str needle) { return str_find_at(haystack, needle, 0); }
 
 /**
  * @return The first index of needle in haystack, or -1 if not found
@@ -194,9 +192,7 @@ int str_find_c(const str haystack, const char *needle, const size_t n) {
   return str_find(haystack, target);
 }
 
-bool str_contains(const str haystack, const str needle) {
-  return str_find(haystack, needle) != -1;
-}
+bool str_contains(const str haystack, const str needle) { return str_find(haystack, needle) != -1; }
 
 /**
  * @param s a string

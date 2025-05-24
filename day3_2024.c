@@ -36,8 +36,7 @@ static void part1(const str input) {
 }
 
 static void part2(const str input) {
-  pattern *p = compile_or_exit(
-      strlit("mul\\(([0-9]+),([0-9]+)\\)|(do\\(\\))|(don't\\(\\))"));
+  pattern *p = compile_or_exit(strlit("mul\\(([0-9]+),([0-9]+)\\)|(do\\(\\))|(don't\\(\\))"));
 
   match_data *match = re_prepare_match(p, input);
   str buff = str_new_empty(20);

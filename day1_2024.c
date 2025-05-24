@@ -6,9 +6,7 @@
 #include "strings.h"
 #include "vector.h"
 
-static int cmp(const void *l1, const void *l2) {
-  return *((const long *)l1) - *((const long *)l2);
-}
+static int cmp(const void *l1, const void *l2) { return *((const long *)l1) - *((const long *)l2); }
 
 void part_1(const size_t n, const long *ls, const long *rs) {
   long distance = 0;

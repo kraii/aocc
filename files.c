@@ -17,8 +17,7 @@ str_vec *read_file_lines(const str file_path) {
   while (fgets(buffer, BUFFER_SIZE, f)) {
     size_t len = strlen(buffer);
     str line = str_new(len, buffer, len);
-    while (len > 0 && buffer[len - 1] != '\n' &&
-           fgets(buffer, BUFFER_SIZE, f)) {
+    while (len > 0 && buffer[len - 1] != '\n' && fgets(buffer, BUFFER_SIZE, f)) {
       len = strlen(buffer);
       str_set_cap(&line, str_cap(line) + len);
       const str more = str_wrap(buffer, len);
