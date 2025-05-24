@@ -1,6 +1,6 @@
 #include "hashmap.h"
+
 #include <stddef.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -17,6 +17,7 @@ struct hashmap {
   hash_func hash_func;
   hash_eq eq_func;
   map_entry *entries;
+  void *data;
 };
 
 constexpr size_t INITIAL_SIZE = 16;
@@ -42,44 +43,82 @@ hashmap *hashmap_new(const size_t key_size, const size_t value_size, const hash_
   result->hash_func = hasher;
   result->eq_func = eq;
   result->entries = entries;
+  result->data = &entries[INITIAL_SIZE];
   return result;
 }
 
-static void grow_if_req(hashmap *map) {
-  // TODO
+static int put_entry(map_entry *entries, void *data, const size_t cap, const hashmap *map, const void *key, const void* value) {
+  unsigned attempts = 0;
+  const uint64_t hash = map->hash_func(key);
+  size_t index = hash & cap - 1;
+
+  while (entries[index].key != NULL) {
+    if (map->eq_func(key, entries[index].key)) {
+      // update
+      memcpy(entries[index].value, value, map->value_size);
+      return 0;
+    }
+    index++;
+    attempts++;
+    if (attempts > cap) {
+      return -1;
+    }
+    if (index >= cap) {
+      index = 0;
+    }
+  }
+  // Didn't find a match, insert new
+  void *key_p = data + (map->value_size + map->key_size) * index;
+  void *data_p = key_p + map->key_size;
+  entries[index].key = key_p;
+  entries[index].value = data_p;
+  memcpy(data_p, value, map->value_size);
+  memcpy(key_p, key, map->key_size);
+  return 1;
+}
+
+static bool grow_if_req(hashmap *map) {
+  const float factor = (float) (map->len + 1) / (float) map->cap;
+  if (factor < LOAD_FACTOR) {
+    return true;
+  }
+
+  const size_t cap = map->cap * 2;
+  map_entry *new_entries = calloc(cap, sizeof(map_entry) + map->key_size + map->value_size);
+  if (new_entries == NULL) {
+    return false;
+  }
+  void *new_data = &new_entries[cap];
+
+  map_entry *old_entries = map->entries;
+  for (size_t i = 0; i < map->cap; i++) {
+    if (old_entries[i].key == NULL) {
+      continue;
+    }
+    put_entry(new_entries, new_data, cap, map, old_entries[i].key, old_entries[i].value);
+  }
+
+  map->data = new_data;
+  free(old_entries);
+  old_entries = NULL;
+  map->entries = new_entries;
+  map->cap = cap;
+
+  return true;
 }
 
 bool hashmap_put(hashmap *map, const void *key, const void *value) {
   if (key == NULL || value == NULL) {
     return false;
   }
-  grow_if_req(map);
-  const uint64_t hash = map->hash_func(key);
-  size_t index = hash & map->cap - 1;
-  unsigned attempts = 0;
+  if (!grow_if_req(map)) return false;
 
-  while (map->entries[index].key != NULL) {
-    if (map->eq_func(key, map->entries[index].key)) {
-      // update
-      memcpy(map->entries[index].value, value, map->value_size);
-      return true;
-    }
-    index++;
-    attempts++;
-    if (attempts > map->cap) {
-      return false;
-    }
-    if (index >= map->cap) {
-      index = 0;
-    }
+  const int code = put_entry(map->entries, map->data, map->cap, map, key, value);
+  if (code == 1) {
+    map->len++;
   }
-  // Didn't find a match, insert new
-  map->entries[index].key = &map->entries[index] + sizeof(map_entry);
-  map->entries[index].value = &map->entries[index] + sizeof(map_entry) + map->key_size;
-  memcpy(map->entries[index].value, value, map->value_size);
-  memcpy(map->entries[index].key, key, map->key_size);
-  map->len++;
-  return true;
+
+  return code >= 0;
 }
 
 void *hashmap_get(const hashmap *map, const void *key) {
