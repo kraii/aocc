@@ -4,6 +4,8 @@
 #include "grid.h"
 #include "strings.h"
 
+#include <stdlib.h>
+
 int find_xmas(const grid *grid, const int x, const int y) {
   const int w = grid_w(grid);
   const int h = grid_h(grid);
@@ -63,7 +65,7 @@ bool is_x_mas(const grid *grid, const int x, const int y) {
 
 int main(const int argc, char *argv[]) {
   assert(argc > 1);
-  const grid *grid = grid_from_file(str_wrap_c(argv[1]));
+  grid *grid = grid_from_file(str_wrap_c(argv[1]));
   unsigned xmas = 0;
   unsigned x_mas = 0;
   for (int y = 0; y < grid_h(grid); y++) {
@@ -82,4 +84,5 @@ int main(const int argc, char *argv[]) {
   printf("Part 2 %u \n", x_mas);
   assert(xmas == 2524);
   assert(x_mas == 1873);
+  free(grid);
 }
