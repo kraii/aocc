@@ -106,14 +106,16 @@ Test(hashmap_str, get_set_update) {
   const str moose = strlit("rafl the moose");
   v = 30;
   hashmap_put(map, &moose, &v);
+  const str other_moose = str_new_l("rafl the moose");
 
-  int *result = hashmap_get(map, &abc);
+  const int *result = hashmap_get(map, &abc);
   cr_assert(result != NULL);
   cr_expect_eq(*result, 20);
 
-  result = hashmap_get(map, &moose);
+  result = hashmap_get(map, &other_moose);
   cr_assert(result != NULL);
   cr_expect_eq(*result, 30);
 
+  str_free(other_moose);
   hashmap_free(map);
 }
