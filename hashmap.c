@@ -1,13 +1,9 @@
 #include "hashmap.h"
 
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct map_entry {
-  void *key;
-  void *value;
-} map_entry;
 
 struct hashmap {
   size_t cap;
@@ -16,7 +12,7 @@ struct hashmap {
   size_t value_size;
   hash_func hash_func;
   hash_eq eq_func;
-  map_entry *entries;
+  hashmap_entry *entries;
   void *data;
 };
 
@@ -24,13 +20,12 @@ constexpr size_t INITIAL_SIZE = 16;
 constexpr float LOAD_FACTOR = 0.6f;
 
 hashmap *hashmap_new(const size_t key_size, const size_t value_size, const hash_func hasher, const hash_eq eq) {
-
   hashmap *result = malloc(sizeof(hashmap));
   if (result == NULL) {
     return NULL;
   }
 
-  map_entry *entries = calloc(INITIAL_SIZE, sizeof(map_entry) + key_size + value_size);
+  hashmap_entry *entries = calloc(INITIAL_SIZE, sizeof(hashmap_entry) + key_size + value_size);
   if (entries == NULL) {
     free(result);
     return NULL;
@@ -47,7 +42,8 @@ hashmap *hashmap_new(const size_t key_size, const size_t value_size, const hash_
   return result;
 }
 
-static int put_entry(map_entry *entries, void *data, const size_t cap, const hashmap *map, const void *key, const void* value) {
+static int put_entry(hashmap_entry *entries, void *data, const size_t cap, const hashmap *map, const void *key,
+                     const void *value) {
   unsigned attempts = 0;
   const uint64_t hash = map->hash_func(key);
   size_t index = hash & cap - 1;
@@ -78,19 +74,19 @@ static int put_entry(map_entry *entries, void *data, const size_t cap, const has
 }
 
 static bool grow_if_req(hashmap *map) {
-  const float factor = (float) (map->len + 1) / (float) map->cap;
+  const float factor = (float)(map->len + 1) / (float)map->cap;
   if (factor < LOAD_FACTOR) {
     return true;
   }
 
   const size_t cap = map->cap * 2;
-  map_entry *new_entries = calloc(cap, sizeof(map_entry) + map->key_size + map->value_size);
+  hashmap_entry *new_entries = calloc(cap, sizeof(hashmap_entry) + map->key_size + map->value_size);
   if (new_entries == NULL) {
     return false;
   }
   void *new_data = &new_entries[cap];
 
-  map_entry *old_entries = map->entries;
+  hashmap_entry *old_entries = map->entries;
   for (size_t i = 0; i < map->cap; i++) {
     if (old_entries[i].key == NULL) {
       continue;
@@ -111,7 +107,8 @@ bool hashmap_put(hashmap *map, const void *key, const void *value) {
   if (key == NULL || value == NULL) {
     return false;
   }
-  if (!grow_if_req(map)) return false;
+  if (!grow_if_req(map))
+    return false;
 
   const int code = put_entry(map->entries, map->data, map->cap, map, key, value);
   if (code == 1) {
@@ -145,6 +142,53 @@ void *hashmap_get(const hashmap *map, const void *key) {
   }
   return NULL;
 }
+hashmap_entry hashmap_delete(hashmap *map, const void *key) {
+  hashmap_entry result = {NULL, NULL};
+  if (key == NULL) {
+    return result;
+  }
+
+  const uint64_t hash = map->hash_func(key);
+  size_t index = hash & map->cap - 1;
+  unsigned attempts = 0;
+  bool found = false;
+
+  while (map->entries[index].key != NULL) {
+    if (map->eq_func(key, map->entries[index].key)) {
+      result.key = malloc(map->key_size);
+      result.value = malloc(map->value_size);
+      memcpy(result.key, map->entries[index].key, map->key_size);
+      memcpy(result.value, map->entries[index].value, map->value_size);
+      map->entries[index].key = NULL;
+      map->entries[index].value = NULL;
+      map->len--;
+      found = true;
+    } else if (found) {
+      // any entries until gap is reach could now be out of place so reinsert them
+      const void *tmp_key = map->entries[index].key;
+      const void *tmp_value = map->entries[index].value;
+      map->entries[index].key = NULL;
+      map->entries[index].value = NULL;
+      put_entry(map->entries, map->data, map->cap, map, tmp_key, tmp_value);
+    }
+
+    index++;
+    attempts++;
+    if (attempts > map->cap) {
+      break;
+    }
+    if (index >= map->cap) {
+      index = 0;
+    }
+  }
+  return result;
+}
+
+size_t hashmap_len(const hashmap *map) {
+  if (map == NULL)
+    return 0;
+  return map->len;
+}
 
 uint64_t hashmap_fnv_hash(const uint8_t *bytes, const size_t n) {
   constexpr uint64_t offset = 14695981039346656037UL;
@@ -157,7 +201,13 @@ uint64_t hashmap_fnv_hash(const uint8_t *bytes, const size_t n) {
   }
   return hash;
 }
+
 void hashmap_free(hashmap *map) {
   free(map->entries);
   free(map);
+}
+
+void hashmap_free_entry(const hashmap_entry entry) {
+  free(entry.key);
+  free(entry.value);
 }
