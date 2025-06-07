@@ -44,3 +44,15 @@ char grid_at(const grid *g, const int x, const int y) {
 int grid_w(const grid *g) { return g->w; }
 
 int grid_h(const grid *g) { return g->h; }
+
+bool grid_in_bounds(const grid *grid, const int x, const int y) {
+  return x >= 0 && y >= 0 && x < grid->w && y < grid->h;
+}
+
+point point_add(const point a, const point b) {
+  return (point){a.x + b.x, a.y + b.y};
+}
+
+point point_turn_clock(const point p) {
+  return (point){-p.y, p.x};
+}

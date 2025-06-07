@@ -25,5 +25,9 @@ char grid_atp(const grid *g, point p);
 char grid_at(const grid *g, int x, int y);
 int grid_w(const grid *g);
 int grid_h(const grid *g);
+bool grid_in_bounds(const grid *grid, int x, int y);
+
+point point_add(point a, point b);
+point point_turn_clock(point p);
 
 #endif

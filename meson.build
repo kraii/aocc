@@ -2,6 +2,8 @@ project('aocc', 'c')
 
 fs = import('fs')
 
+add_global_arguments('-std=gnu23', language: 'c')
+
 test_resources = ['example.txt', 'example_grid.txt']
 foreach r : test_resources
     fs.copyfile('test/' + r)
@@ -16,7 +18,6 @@ lib_pcre2 = cc.find_library('pcre2-8', required : true)
 test_deps = [lib_criterion]
 
 
-
 vector_lib = library('vector', 'vector.c')
 strings_lib = library('strings', 'strings.c', link_with : [vector_lib])
 files_lib = library('files', 'files.c', link_with : [vector_lib, strings_lib])
@@ -24,7 +25,7 @@ regex_lib = library('regex', 'regex.c', link_with : [vector_lib, strings_lib], d
 grid_lib = library('grid', 'grid.c', link_with : [files_lib, strings_lib, vector_lib])
 hashmap_lib = library('hashmap', 'hashmap.c')
 
-cal_2024 = ['day1', 'day2', 'day3', 'day4', 'day5']
+cal_2024 = ['day1', 'day2', 'day3', 'day4', 'day5', 'day6']
 foreach d : cal_2024
     name = d + '_2024'
     executable(

@@ -46,7 +46,7 @@ static int put_entry(hashmap_entry *entries, void *data, const size_t cap, const
                      const void *value) {
   unsigned attempts = 0;
   const uint64_t hash = map->hash_func(key);
-  size_t index = hash & cap - 1;
+  size_t index = hash & (cap - 1);
 
   while (entries[index].key != NULL) {
     if (map->eq_func(key, entries[index].key)) {
@@ -124,7 +124,7 @@ void *hashmap_get(const hashmap *map, const void *key) {
   }
 
   const uint64_t hash = map->hash_func(key);
-  size_t index = hash & map->cap - 1;
+  size_t index = hash & (map->cap - 1);
   unsigned attempts = 0;
 
   while (map->entries[index].key != NULL) {
@@ -149,7 +149,7 @@ hashmap_entry hashmap_delete(hashmap *map, const void *key) {
   }
 
   const uint64_t hash = map->hash_func(key);
-  size_t index = hash & map->cap - 1;
+  size_t index = hash & (map->cap - 1);
   unsigned attempts = 0;
   bool found = false;
 
