@@ -15,12 +15,12 @@ typedef bool (*hash_eq)(const void *, const void *);
 hashmap *hashmap_new(size_t key_size, size_t value_size, hash_func hasher, hash_eq eq);
 bool hashmap_put(hashmap *map, const void *key, const void *value);
 void *hashmap_get(const hashmap *map, const void *key);
-hashmap_entry hashmap_delete(hashmap *map, const void *key);
+bool hashmap_delete(hashmap *map, const void *key);
 size_t hashmap_len(const hashmap *map);
 
 uint64_t hashmap_fnv_hash(const uint8_t *bytes, size_t n);
 
+void hashmap_clear(hashmap *map);
 void hashmap_free(hashmap *map);
-void hashmap_free_entry(hashmap_entry entry);
 
 #endif // HASHMAP_H

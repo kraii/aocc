@@ -133,13 +133,8 @@ Test(hashmap_str, delete_item) {
   hashmap_put(map, &moose, &v);
   cr_assert_eq(hashmap_len(map), 2);
 
-  const hashmap_entry deleted = hashmap_delete(map, &abc);
-  cr_assert(deleted.key);
-  cr_assert(deleted.value);
-  const str deleted_key = *(str *)deleted.key;
-  const int deleted_value = *(int *)deleted.value;
-  cr_assert_str_eq(strc(deleted_key), "abc");
-  cr_assert_eq(deleted_value, 10);
+  const bool deleted = hashmap_delete(map, &abc);
+  cr_assert(deleted);
 
   cr_assert_eq(hashmap_len(map), 1);
 }
@@ -166,14 +161,8 @@ Test(hashmap_str, delete_item_after_collision) {
   cr_assert(result != NULL);
   cr_expect_eq(*result, 20);
 
-  const hashmap_entry deleted = hashmap_delete(map, &abc);
-  cr_assert(deleted.key);
-  cr_assert(deleted.value);
-  const str deleted_key = *(str *)deleted.key;
-  const int deleted_value = *(int *)deleted.value;
-  cr_assert_str_eq(strc(deleted_key), "abc");
-  cr_assert_eq(deleted_value, 10);
-  hashmap_free_entry(deleted);
+  const bool deleted = hashmap_delete(map, &abc);
+  cr_assert(deleted);
 
   cr_assert_eq(hashmap_len(map), 2);
 
@@ -184,4 +173,26 @@ Test(hashmap_str, delete_item_after_collision) {
   result = hashmap_get(map, &moose);
   cr_assert(result != NULL);
   cr_expect_eq(*result, 30);
+}
+
+Test(hashmap_int, clear) {
+  // int main(...) {
+  hashmap *map = hashmap_new(sizeof(int), sizeof(int), int_hash, int_eq);
+
+  int k = 1;
+  int v = 10;
+  bool success = hashmap_put(map, &k, &v);
+  cr_assert(success);
+  k = 453;
+  v = 24;
+  success = hashmap_put(map, &k, &v);
+  cr_assert(success);
+
+  hashmap_clear(map);
+  cr_assert_eq(hashmap_len(map), 0);
+  cr_assert_null(hashmap_get(map, &k));
+  k = 1;
+  cr_assert_null(hashmap_get(map, &k));
+
+  hashmap_free(map);
 }

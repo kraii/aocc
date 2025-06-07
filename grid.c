@@ -31,6 +31,19 @@ grid *grid_from_file(const str filepath) {
   return result;
 }
 
+grid *grid_new_copy(const grid *other) {
+  const size_t size = offsetof(grid, data) + sizeof(char) * (other->w * other->h);
+  grid *result = malloc(size);
+  memcpy(result, other, size);
+  return result;
+}
+
+void grid_copy(grid *dest, const grid *src) {
+  assert(dest->w >= src->w && dest->h >= src->h);
+  const size_t size = offsetof(grid, data) + sizeof(char) * (src->w * src->h);
+  memcpy(dest, src, size);
+}
+
 char grid_atp(const grid *g, const point p) { return grid_at(g, p.x, p.y); }
 
 char grid_at(const grid *g, const int x, const int y) {
@@ -41,6 +54,11 @@ char grid_at(const grid *g, const int x, const int y) {
   return g->data[y * g->w + x];
 }
 
+void grid_set(grid *g, const int x, const int y, const char c) {
+  assert(x >= 0 && x < g->w && y >= 0 && y < g->h);
+  g->data[y * g->w + x] = c;
+}
+
 int grid_w(const grid *g) { return g->w; }
 
 int grid_h(const grid *g) { return g->h; }
@@ -49,10 +67,12 @@ bool grid_in_bounds(const grid *grid, const int x, const int y) {
   return x >= 0 && y >= 0 && x < grid->w && y < grid->h;
 }
 
-point point_add(const point a, const point b) {
-  return (point){a.x + b.x, a.y + b.y};
-}
+bool grid_in_boundsp(const grid *grid, const point p) { return grid_in_bounds(grid, p.x, p.y); }
 
-point point_turn_clock(const point p) {
-  return (point){-p.y, p.x};
+point point_add(const point a, const point b) { return (point){a.x + b.x, a.y + b.y}; }
+
+point point_turn_clock(const point p) { return (point){-p.y, p.x}; }
+
+bool point_eq(const point a, const point b) {
+  return a.x == b.x && a.y == b.y;
 }

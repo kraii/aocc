@@ -142,10 +142,9 @@ void *hashmap_get(const hashmap *map, const void *key) {
   }
   return NULL;
 }
-hashmap_entry hashmap_delete(hashmap *map, const void *key) {
-  hashmap_entry result = {NULL, NULL};
+bool hashmap_delete(hashmap *map, const void *key) {
   if (key == NULL) {
-    return result;
+    return false;
   }
 
   const uint64_t hash = map->hash_func(key);
@@ -155,10 +154,6 @@ hashmap_entry hashmap_delete(hashmap *map, const void *key) {
 
   while (map->entries[index].key != NULL) {
     if (map->eq_func(key, map->entries[index].key)) {
-      result.key = malloc(map->key_size);
-      result.value = malloc(map->value_size);
-      memcpy(result.key, map->entries[index].key, map->key_size);
-      memcpy(result.value, map->entries[index].value, map->value_size);
       map->entries[index].key = NULL;
       map->entries[index].value = NULL;
       map->len--;
@@ -181,7 +176,7 @@ hashmap_entry hashmap_delete(hashmap *map, const void *key) {
       index = 0;
     }
   }
-  return result;
+  return found;
 }
 
 size_t hashmap_len(const hashmap *map) {
@@ -202,12 +197,13 @@ uint64_t hashmap_fnv_hash(const uint8_t *bytes, const size_t n) {
   return hash;
 }
 
+void hashmap_clear(hashmap *map) {
+  map->len=0;
+  const size_t node_size = sizeof(hashmap_entry) + map->key_size + map->value_size;
+  memset(map->entries, 0, node_size * map->cap);
+}
+
 void hashmap_free(hashmap *map) {
   free(map->entries);
   free(map);
-}
-
-void hashmap_free_entry(const hashmap_entry entry) {
-  free(entry.key);
-  free(entry.value);
 }
