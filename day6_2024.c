@@ -100,7 +100,7 @@ int main(const int argc, char *argv[]) {
   grid *maze2 = grid_new_copy(maze);
   int part1_positions = 0;
   int part2 = 0;
-  hashmap *part2_visited = hashmap_new(sizeof(location), sizeof(bool), location_hash, location_eq);
+  hashmap *part2_visited = hashmap_newc(w * h * 2, sizeof(location), sizeof(bool), location_hash, location_eq);
 
   for (int y = 0; y < h; y++) {
     for (int x = 0; x < w; x++) {

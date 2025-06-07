@@ -19,13 +19,14 @@ struct hashmap {
 constexpr size_t INITIAL_SIZE = 16;
 constexpr float LOAD_FACTOR = 0.6f;
 
-hashmap *hashmap_new(const size_t key_size, const size_t value_size, const hash_func hasher, const hash_eq eq) {
+hashmap *hashmap_newc(const size_t initial_capacity, const size_t key_size, const size_t value_size,
+                      const hash_func hasher, const hash_eq eq) {
   hashmap *result = malloc(sizeof(hashmap));
   if (result == NULL) {
     return NULL;
   }
 
-  hashmap_entry *entries = calloc(INITIAL_SIZE, sizeof(hashmap_entry) + key_size + value_size);
+  hashmap_entry *entries = calloc(initial_capacity, sizeof(hashmap_entry) + key_size + value_size);
   if (entries == NULL) {
     free(result);
     return NULL;
@@ -40,6 +41,10 @@ hashmap *hashmap_new(const size_t key_size, const size_t value_size, const hash_
   result->entries = entries;
   result->data = &entries[INITIAL_SIZE];
   return result;
+}
+
+hashmap *hashmap_new(const size_t key_size, const size_t value_size, const hash_func hasher, const hash_eq eq) {
+  return hashmap_newc(INITIAL_SIZE, key_size, value_size, hasher, eq);
 }
 
 static int put_entry(hashmap_entry *entries, void *data, const size_t cap, const hashmap *map, const void *key,
@@ -198,7 +203,7 @@ uint64_t hashmap_fnv_hash(const uint8_t *bytes, const size_t n) {
 }
 
 void hashmap_clear(hashmap *map) {
-  map->len=0;
+  map->len = 0;
   const size_t node_size = sizeof(hashmap_entry) + map->key_size + map->value_size;
   memset(map->entries, 0, node_size * map->cap);
 }
