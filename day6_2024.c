@@ -62,8 +62,9 @@ static bool has_loop(const grid *maze, point current, hashmap *visited) {
 static uint64_t location_hash(const void *v) {
   const location *loc = (location *)v;
   const int vals[4] = {loc->dir.x, loc->dir.y, loc->pos.x, loc->pos.y};
+  constexpr size_t hash_size = (sizeof(int) * 4) / sizeof(u_int8_t);
   // ReSharper disable once CppRedundantCastExpression
-  return hashmap_fnv_hash((u_int8_t*)vals, (sizeof(int) * 4) / sizeof(u_int8_t));
+  return hashmap_fnv_hash((u_int8_t*)vals, hash_size);
 }
 
 static bool location_eq(const void *ap, const void *bp) {

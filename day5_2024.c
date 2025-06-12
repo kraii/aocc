@@ -90,14 +90,14 @@ int main(const int argc, char *argv[]) {
       part2 += pages[mid];
     }
 
-    str_vector_free(pages_str);
+    str_vec_free(pages_str);
   }
   printf("part 1 %u\n", part1);
   printf("part 2 %u\n", part2);
 
   free(pages);
   str_free(buffer);
-  str_vector_free(lines);
+  str_vec_free(lines);
   free(rules);
   return 0;
 }

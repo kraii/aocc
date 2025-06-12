@@ -292,7 +292,7 @@ str vector_get_str(const str_vec *vec, const size_t i) {
   return *(str *)r;
 }
 
-void str_vector_free(str_vec *vec) {
+void str_vec_free(str_vec *vec) {
   for (size_t i = 0; i < vector_len(vec); i++) {
     str_free(vector_get_str(vec, i));
   }

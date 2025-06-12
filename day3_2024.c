@@ -79,5 +79,5 @@ int main(const int argc, char *argv[]) {
   part2(input);
 
   str_free(input);
-  str_vector_free(lines);
+  str_vec_free(lines);
 }

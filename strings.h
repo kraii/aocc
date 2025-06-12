@@ -40,7 +40,7 @@ void str_trim(str *s);
 long str_to_long(str s);
 
 str vector_get_str(const str_vec *vec, size_t i);
-void str_vector_free(str_vec *vec);
+void str_vec_free(str_vec *vec);
 
 #define str_set_l(s, value) str_set(s, value, sizeof(value) - 1)
 #define str_new_l(value) str_new(sizeof(value) - 1, value, sizeof(value) - 1)

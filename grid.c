@@ -27,7 +27,7 @@ grid *grid_from_file(const str filepath) {
     memcpy(&result->data[i * x], strc(line), sizeof(char) * x);
   }
 
-  str_vector_free(lines);
+  str_vec_free(lines);
   return result;
 }
 
