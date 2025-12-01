@@ -37,6 +37,17 @@ foreach d : cal_2024
     )
 endforeach
 
+cal_2025 = ['day1']
+foreach d : cal_2025
+    name = '2025_' + d
+    executable(
+        name,
+        name + '.c',
+        link_with : [vector_lib, strings_lib, files_lib, regex_lib, grid_lib, hashmap_lib],
+        dependencies : [lib_pcre2, m_dep]
+    )
+endforeach
+
 
 foreach t : tests
     e = executable(t + '_test',

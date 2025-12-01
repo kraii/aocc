@@ -209,6 +209,14 @@ str str_new_substr(const str s, const size_t start, const size_t end) {
   return str_new(len, s.buffer + start, len);
 }
 
+void str_substr(str *dest, const str src, const size_t start, const size_t end) {
+  if (start >= src.len || start >= end) {
+    return;
+  }
+  const size_t len = min(end, src.len) - start;
+  str_set(dest, src.buffer + start, len);
+}
+
 str_vec *str_split(const str src, const str delim) {
   str_vec *result = vector_new(sizeof(str));
   int match = str_find(src, delim);
@@ -297,4 +305,8 @@ void str_vec_free(str_vec *vec) {
     str_free(vector_get_str(vec, i));
   }
   vector_free(vec);
+}
+
+char str_at(const str s, const size_t i) {
+  return s.buffer[i];
 }
