@@ -6,13 +6,13 @@
 #include "vector.h"
 
 int main(const int argc, char *argv[]) {
-
   assert(argc > 1);
 
   vector *lines = read_file_lines(str_wrap_c(argv[1]));
 
   int current = 50;
-  int total = 0;
+  int total_part_1 = 0;
+  int total_part_2 = 0;
 
   str buffer = str_new_empty(5);
 
@@ -32,13 +32,16 @@ int main(const int argc, char *argv[]) {
       if (current > 99) {
         current = 0;
       }
+      if (current == 0) {
+        total_part_2++;
+      }
     }
-    if (current == 0) {
-      total++;
+    if (current) {
+      total_part_1++;
     }
-    printf("current %d %d %c\n", current, val, str_at(line, 0));
   }
-  printf("Total %d\n", total);
+  printf("Part 1 %d\n", total_part_1);
+  printf("Part 2 %d\n", total_part_2);
   str_free(buffer);
   str_vec_free(lines);
 }
