@@ -39,6 +39,7 @@ bool str_set_cap(str *s, size_t capacity);
 const char *strc(str s);
 void str_trim(str *s);
 long str_to_long(str s);
+bool str_from_long(str *s, long l);
 char str_at(str s, size_t i);
 
 str vector_get_str(const str_vec *vec, size_t i);

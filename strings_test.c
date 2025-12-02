@@ -329,3 +329,10 @@ Test(string_tok, example_2) {
 
   str_free(dest);
 }
+
+Test(str_from_long, example_1) {
+  str dest = str_new_empty(16);
+  str_from_long(&dest, 50124);
+  cr_assert_str_eq(strc(dest), "50124");
+  str_free(dest);
+}

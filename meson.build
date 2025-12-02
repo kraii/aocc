@@ -16,11 +16,9 @@ lib_criterion = cc.find_library('criterion', required : true)
 lib_pcre2 = cc.find_library('pcre2-8', required : true)
 m_dep = cc.find_library('m', required : true)
 
-test_deps = [lib_criterion]
-
 
 vector_lib = library('vector', 'vector.c')
-strings_lib = library('strings', 'strings.c', link_with : [vector_lib])
+strings_lib = library('strings', 'strings.c', link_with : [vector_lib], dependencies: [m_dep])
 files_lib = library('files', 'files.c', link_with : [vector_lib, strings_lib])
 regex_lib = library('regex', 'regex.c', link_with : [vector_lib, strings_lib], dependencies : [lib_pcre2])
 grid_lib = library('grid', 'grid.c', link_with : [files_lib, strings_lib, vector_lib])
@@ -37,9 +35,9 @@ foreach d : cal_2024
     )
 endforeach
 
-cal_2025 = ['day1']
+cal_2025 = ['1', '2']
 foreach d : cal_2025
-    name = '2025_' + d
+    name = '2025_day' + d
     executable(
         name,
         name + '.c',
@@ -52,7 +50,7 @@ endforeach
 foreach t : tests
     e = executable(t + '_test',
                    t + '_test.c',
-                   dependencies : test_deps,
+                   dependencies : [lib_criterion, m_dep],
                    link_with : [vector_lib, strings_lib, files_lib, regex_lib, grid_lib, hashmap_lib]
     )
     test(t, e)

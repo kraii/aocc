@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "vector.h"
+#include <math.h>
 
 #define str_null ((str){0, 0, NULL})
 
@@ -292,6 +293,22 @@ long str_to_long(const str s) {
   const long result = strtol(s.buffer, &end, 10);
   assert(end != s.buffer);
   return result;
+}
+
+bool str_from_long(str *s, long l) {
+  const int n_digits = log10(l) + 1;
+  // printf("n diggle %d %ld \n", n_digits, l);
+  if (n_digits >= s->cap) {
+    return false;
+  }
+
+  for (int i = n_digits - 1; i >= 0; i--) {
+    s->buffer[i] = l % 10 + 48;
+    l /= 10;
+  }
+  s->len = n_digits;
+  terminate(s);
+  return true;
 }
 
 str vector_get_str(const str_vec *vec, const size_t i) {
