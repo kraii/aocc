@@ -7,32 +7,41 @@
 
 #include <stdlib.h>
 
-
+constexpr int NUM_BATTERIES = 12;
 
 int main(const int argc, char *argv[]) {
   assert(argc > 1);
 
   vector *lines = read_file_lines(str_wrap_c(argv[1]));
 
-  int part_1 = 0;
+  long total_joltage = 0;
 
   for (int lineNumber = 0; lineNumber < vector_len(lines); lineNumber++) {
     const str line = vector_get_str(lines, lineNumber);
-    int highest = 0;
-    for (int i = 0; i < str_len(line); i++) {
-      const int leftJolt = str_at(line, i) - 48;
-      for (int j = i + 1; j < str_len(line); j++) {
-        const int rightJolt = str_at(line, j) - 48;
-        const int total = (leftJolt * 10) + rightJolt;
-        if (total > highest) {
-          highest = total;
+
+    int chosen[NUM_BATTERIES] = {0};
+    int index = -1;
+
+    for (int i = 0; i < NUM_BATTERIES; i++) {
+      const int end = str_len(line) - (NUM_BATTERIES - i) + 1;
+      for (int j = index + 1; j < end; j++) {
+        const int next = str_at(line, j) - 48;
+        if (next > chosen[i]) {
+          chosen[i] = next;
+          index = j;
         }
       }
     }
-    printf("%s %d \n", strc(line), highest);
-    part_1 += highest;
+
+    long row_total = 0;
+    long current_pow = 1;
+    for (int i = NUM_BATTERIES - 1; i >= 0; i--) {
+      row_total += (chosen[i] * current_pow);
+      current_pow *= 10;
+    }
+    total_joltage += row_total;
   }
 
-  printf("Part 1 %d\n", part_1);
+  printf("Total %ld\n", total_joltage);
   str_vec_free(lines);
 }
