@@ -5,8 +5,6 @@
 #include "strings.h"
 #include "vector.h"
 
-#include <stdlib.h>
-
 constexpr int NUM_BATTERIES = 12;
 
 int main(const int argc, char *argv[]) {

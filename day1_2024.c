@@ -12,7 +12,7 @@ void part_1(const size_t n, const long *ls, const long *rs) {
   long distance = 0;
 
   for (size_t i = 0; i < n; i++) {
-    distance += abs(ls[i] - rs[i]);
+    distance += labs(ls[i] - rs[i]);
   }
 
   printf("Part 1 %ld\n", distance);

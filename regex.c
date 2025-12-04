@@ -96,7 +96,7 @@ str re_get_error_message(const int err_code) {
   constexpr int max_error_size = 100;
   char err[max_error_size];
 
-  pcre2_get_error_message(err_code, (PCRE2_UCHAR *)err, max_error_size);
+  pcre2_get_error_message(err_code, err, max_error_size);
   const size_t len = strlen(err);
   return str_new(len, err, len);
 }
