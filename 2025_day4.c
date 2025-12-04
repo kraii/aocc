@@ -35,11 +35,44 @@ static void do_part_1(const grid *grid) {
 
   printf("part 1: %d\n", part_1);
 }
+
+static void do_part_2(grid *grid) {
+  int part_2 = 0;
+
+  for (;;) {
+    int removed = 0;
+    for (int y = 0; y < grid_h(grid); y++) {
+      for (int x = 0; x < grid_w(grid); x++) {
+        const point current = {x, y};
+        if (grid_atp(grid, current) == '.') {
+          continue;
+        }
+
+        int adj_paper;
+        count_adj_paper(grid, current, &adj_paper);
+        if (adj_paper < 4) {
+          removed++;
+          part_2++;
+          grid_set(grid, x, y, '.');
+        }
+      }
+    }
+    if (removed <= 0) {
+      break;
+    }
+  }
+
+  printf("part 2: %d\n", part_2);
+}
+
+
+
 int main(const int argc, char *argv[]) {
   assert(argc > 1);
 
   grid *grid = grid_from_file(str_wrap_c(argv[1]));
   do_part_1(grid);
+  do_part_2(grid);
 
   free(grid);
 }
