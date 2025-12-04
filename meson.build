@@ -1,8 +1,6 @@
-project('aocc', 'c')
+project('aocc', 'c', default_options: ['c_std=gnu23', 'warning_level=2'])
 
 fs = import('fs')
-
-add_global_arguments('-std=gnu23', language: 'c')
 
 test_resources = ['example.txt', 'example_grid.txt']
 foreach r : test_resources
