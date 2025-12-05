@@ -33,7 +33,7 @@ foreach d : cal_2024
     )
 endforeach
 
-cal_2025 = ['1', '2', '3', '4']
+cal_2025 = ['1', '2', '3', '4', '5']
 foreach d : cal_2025
     name = '2025_day' + d
     executable(
