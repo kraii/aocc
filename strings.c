@@ -288,16 +288,16 @@ void str_trim(str *s) {
   terminate(s);
 }
 
-long str_to_long(const str s) {
+int64_t str_to_long(const str s) {
   char *end;
   const long result = strtol(s.buffer, &end, 10);
   assert(end != s.buffer);
   return result;
 }
 
-bool str_from_long(str *s, long l) {
+bool str_from_long(str *s, int64_t l) {
   const int n_digits = log10(l) + 1;
-  // printf("n diggle %d %ld \n", n_digits, l);
+
   if (n_digits >= s->cap) {
     return false;
   }
