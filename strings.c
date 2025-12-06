@@ -223,8 +223,11 @@ str_vec *str_split(const str src, const str delim) {
   int match = str_find(src, delim);
   size_t index = 0;
   while (match != -1 && index < src.len) {
-    const str token = str_new_substr(src, index, match);
-    vector_push(result, &token);
+    if (match > index) {
+      const str token = str_new_substr(src, index, match);
+      vector_push(result, &token);
+    }
+
     index = match + delim.len;
     match = str_find_at(src, delim, index);
   }

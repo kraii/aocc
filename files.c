@@ -8,7 +8,7 @@
 
 #define BUFFER_SIZE 200
 
-str_vec *read_file_lines(const str file_path) {
+static str_vec *do_read_file_lines(const str file_path, bool trim) {
   FILE *f = fopen(strc(file_path), "r");
   assert(f != NULL);
   str_vec *result = vector_new(sizeof(str));
@@ -23,10 +23,21 @@ str_vec *read_file_lines(const str file_path) {
       const str more = str_wrap(buffer, len);
       str_cat_l(&line, more);
     }
-    str_trim(&line);
+    if (trim) {
+      str_trim(&line);
+    }
+
     vector_push(result, &line);
   }
 
   fclose(f);
   return result;
+}
+
+vector *read_file_lines(const str file_path) {
+  return do_read_file_lines(file_path, true);
+}
+
+vector *read_file_lines_no_trim(const str file_path) {
+  return do_read_file_lines(file_path, false);
 }
