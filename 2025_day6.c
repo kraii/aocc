@@ -64,13 +64,13 @@ void part_1(char **argv) {
 
 void part_2(char **argv) {
   int64_t part_2 = 0;
-  vector *untrimmed = read_file_lines_no_trim(str_wrap_c(argv[1]));
-  const int max_y = vector_len(untrimmed);
+  vector *lines = read_file_lines_no_trim(str_wrap_c(argv[1]));
+  const int max_y = vector_len(lines);
   int operands[max_y];
   int ops_count = 0;
   int longest_line_length = 0;
-  for (int i = 0; i < vector_len(untrimmed); i++) {
-    const str line = vector_get_str(untrimmed, i);
+  for (int i = 0; i < vector_len(lines); i++) {
+    const str line = vector_get_str(lines, i);
     longest_line_length = max(longest_line_length, str_len(line));
   }
 
@@ -78,8 +78,8 @@ void part_2(char **argv) {
     int digit_count = 0;
     int digits[max_y];
 
-    for (int y = 0; y < vector_len(untrimmed); y++) {
-      const str line = vector_get_str(untrimmed, y);
+    for (int y = 0; y < vector_len(lines); y++) {
+      const str line = vector_get_str(lines, y);
       if (x >= str_len(line)) {
         continue;
       }
@@ -96,7 +96,7 @@ void part_2(char **argv) {
 
     operands[ops_count++] = operand;
 
-    const char operator= str_at(vector_get_str(untrimmed, max_y - 1), x);
+    const char operator= str_at(vector_get_str(lines, max_y - 1), x);
 
     if (operator!= '*' && operator!= '+') {
       continue;
@@ -107,12 +107,12 @@ void part_2(char **argv) {
     }
     part_2 += calc;
     ops_count = 0;
-    // skip empty line
+    // skip empty column
     x--;
   }
 
   printf("part 2: %ld\n", part_2);
-  str_vec_free(untrimmed);
+  str_vec_free(lines);
 }
 
 int main(const int argc, char *argv[]) {
