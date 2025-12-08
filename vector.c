@@ -105,12 +105,10 @@ void vector_set(const vector *vec, const size_t i, const void *e) {
 void vector_set_i(const vector *vec, const size_t i, const int e) { vector_set(vec, i, &e); }
 
 void *vector_pop(vector *vec) { return vec->data + vec->elem_size * --vec->len; }
-
+void *vector_peek(const vector *vec) { return vec->data + vec->elem_size * (vec->len - 1); }
 int vector_pop_i(vector *vec) { return *(int *)vector_pop(vec); }
 
-void vector_qsort(vector *vec, const vec_cmp_function_type cmp) {
-  qsort(vec->data, vec->len, vec->elem_size, cmp);
-}
+void vector_qsort(vector *vec, const vec_cmp_function_type cmp) { qsort(vec->data, vec->len, vec->elem_size, cmp); }
 
 static size_t min(const size_t a, const size_t b) { return b < a ? b : a; }
 
@@ -120,6 +118,4 @@ void vector_cpy(vector *dest, const vector *src) {
   dest->len = src->len;
 }
 
-void vector_clear(vector *vec) {
-  vec->len=0;
-}
+void vector_clear(vector *vec) { vec->len = 0; }

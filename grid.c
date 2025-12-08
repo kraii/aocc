@@ -47,8 +47,8 @@ void grid_copy(grid *dest, const grid *src) {
 char grid_atp(const grid *g, const point p) { return grid_at(g, p.x, p.y); }
 
 char grid_at(const grid *g, const int x, const int y) {
-  if (x < 0 || x >= g->w || y < 0 || y >= g->h) {
-    fprintf(stderr, "out of bounds grid access (%u, %u)", x, y);
+  if (x < 0 || x >= g->w || y < 0 || y > g->h) {
+    fprintf(stderr, "out of bounds grid access (%u, %u)\n", x, y);
     return '\0';
   }
   return g->data[y * g->w + x];

@@ -24,6 +24,7 @@ void vector_set(const vector *vec, size_t i, const void *e);
 void vector_set_i(const vector *vec, size_t i, int e);
 void *vector_pop(vector *vec);
 int vector_pop_i(vector *vec);
+void *vector_peek(const vector *vec);
 void vector_qsort(vector *vec, vec_cmp_function_type cmp);
 void vector_cpy(vector *dest, const vector *src);
 void vector_clear(vector *vec);
