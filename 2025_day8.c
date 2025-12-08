@@ -42,16 +42,16 @@ static void init_circuits(void) {
   }
 }
 
-static int cmp_pair_distance(const void *pair1_, const void *pair2_) {
-  const pair *pair1 = pair1_;
-  const pair *pair2 = pair2_;
+static int cmp_pair_distance(const void *a, const void *b) {
+  const pair *pair1 = a;
+  const pair *pair2 = b;
 
   return (pair1->dist > pair2->dist) - (pair1->dist < pair2->dist);
 }
 
-int cmp_circuit_size_reverse(const void *c1p, const void *c2p) {
-  const circuit *c1 = c1p;
-  const circuit *c2 = c2p;
+int cmp_circuit_size_reverse(const void *a, const void *b) {
+  const circuit *c1 = a;
+  const circuit *c2 = b;
 
   return (c1->size < c2->size) - (c1->size > c2->size);
 }
@@ -60,20 +60,18 @@ static void connect_pair(const pair pair) {
   const uint16_t c1 = points[pair.ia].circuit;
   const uint16_t c2 = points[pair.ib].circuit;
 
+  // If not on the same circuit already, proceed to merge
   if (c1 == c2)
     return;
 
-  // merge c1 and c2
   circuits[c1].size += circuits[c2].size;
   points[circuits[c1].end].next = circuits[c2].start;
   circuits[c1].end = circuits[c2].end;
 
-  // make all points from c2 point at c1
   for (uint16_t j = circuits[c2].start; j != EMPTY; j = points[j].next) {
     points[j].circuit = c1;
   }
 
-  // empty c2
   circuits[c2].size = 0;
   circuits[c2].start = EMPTY;
   circuits[c2].end = EMPTY;
@@ -125,7 +123,7 @@ int main(const int argc, char *argv[]) {
   const str delim = strlit(",");
   str buffer = str_new_empty(10);
   for (int i = 0; i < vector_len(lines); i++) {
-    str line = vector_get_str(lines, i);
+    const str line = vector_get_str(lines, i);
     size_t pos = 0;
     str_tok(&buffer, line, &pos, delim);
     points[i].x = str_to_long(buffer);
